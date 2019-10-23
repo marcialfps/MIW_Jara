@@ -1,0 +1,3 @@
+La carpeta public (se usa este nombre por convenio) para almacenar los recursos multimedia, etc...
+Hapi ofrece la posibilidad de permitir a clientes acceder a esta carpeta si se especifica directamente,
+no haciéndo a cada pequeña petición pasar por un router

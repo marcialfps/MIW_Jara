@@ -1,0 +1,2 @@
+La carpeta views (se usa este nombre por convenio) para almacenar
+las vistas de la aplicación, que vamos a generar con la ayuda de handlebars

@@ -1,0 +1,3 @@
+La carpeta layout (se usa este nombre por convenio) para almacenar
+las vistas de la aplicación que forman parte del layout de la misma (header, nav, footer, sidebars...)
+que vamos a reutilizar normalmente, a diferencia del contenido principal de la web.
