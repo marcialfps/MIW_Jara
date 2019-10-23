@@ -13,9 +13,9 @@ module.exports = {
         });
         return promise;
     },
-    obtenerAnuncios : async (db, criterio) => {
+    obtenerTareas : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
+            var collection = db.collection('tareas');
             collection.find(criterio).toArray( (err, result) => {
                 if (err) {
                     resolve(null);

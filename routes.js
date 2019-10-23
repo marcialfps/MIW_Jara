@@ -356,26 +356,30 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
-                path: '/anuncios',
+                path: '/tareas',
                 handler: async (req, h) => {
                     // Hardcoded array of advertisements
                     var criterio = {};
                     if (req.query.criterio != null ){
-                        criterio = { "titulo" : {$regex : ".*"+req.query.criterio.trim()+".*"}};
+                        criterio = {
+                                "titulo" : {$regex : ".*"+req.query.criterio.trim()+".*",
+                                "estado" : req.query.estado
+                            }
+                        };
                     }
 
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerAnuncios(db, criterio))
-                        .then((anuncios) => {
-                            anunciosEjemplo = anuncios;
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            tareasEncontradas = tareas;
                         })
                     // Recorte de longitud de titulos y descripciones
-                    anunciosEjemplo.forEach( (e) => {
+                    tareasEncontradas.forEach( (e) => {
                         if (e.titulo.length > 25){
                             e.titulo = e.titulo.substring(0, 25) + "...";
                         }
                         if (e.descripcion.length > 80) {
-                            e.descripcion = e.descripcion.substring(0, 80) + "...";;
+                            e.descripcion = e.descripcion.substring(0, 80) + "...";
                         }
                     });
 
@@ -384,7 +388,7 @@ module.exports = { // Permite hacer futuros imports
                         { // data for the template
                             usuario: req.auth.credentials,
                             usuarioAutenticado: req.auth.credentials,
-                            anuncios: anunciosEjemplo
+                            anuncios: tareasEncontradas
                         },
                         { // which layout
                             layout: 'base'

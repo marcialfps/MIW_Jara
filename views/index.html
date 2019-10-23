@@ -7,19 +7,23 @@
         <div class="uk-position-center uk-overlay uk-overlay-default">
             <h2 class="uk-margin">Buscar tarea</h2>
             <div class="uk-margin">
-                <form class="uk-search uk-search-default uk-width-1-1"
-                      action="/anuncios">
-                    <span uk-search-icon></span>
-                    <input class="uk-search-input"
-                           name="criterio"
-                           type="search" placeholder="Buscar...">
+                <form action="/tareas">
+                    <div class="uk-inline uk-width-1-1">
+                        <span class="uk-form-icon" uk-icon="icon: search"></span>
+                        <input class="uk-input" type="text" name="criterio"
+                               placeholder="Buscar...">
+                    </div>
+                    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="todo" checked> Todo</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="asignado"> Asignado</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="enprogreso"> En progreso</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="finalizado"> Finalizado</label>
+                    </div>
                 </form>
-                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                    <label><input class="uk-radio" type="radio" name="estado" checked> Todo</label>
-                    <label><input class="uk-radio" type="radio" name="estado"> Asignado</label>
-                    <label><input class="uk-radio" type="radio" name="estado"> En progreso</label>
-                    <label><input class="uk-radio" type="radio" name="estado"> Finalizado</label>
-                </div>
             </div>
         </div>
     </div>
