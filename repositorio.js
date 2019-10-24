@@ -49,14 +49,14 @@ module.exports = {
 
         return promise;
     },
-    obtenerUsuarios : async (db, criterio) => {
+    obtenerOperarios : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('usuarios');
+            var collection = db.collection('operarios');
             collection.find(criterio).toArray( (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
-                    // lista de anuncios
+                    // operarios que cumplen el filtro
                     resolve(result);
                 }
                 db.close();

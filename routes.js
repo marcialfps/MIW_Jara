@@ -198,25 +198,24 @@ module.exports = { // Permite hacer futuros imports
                     password = require('crypto').createHmac('sha256', server.methods.getSecret())
                         .update(req.payload.password).digest('hex');
                     // We build a user with the data provided in the post request
-                    usuarioABuscar = {
-                        usuario: req.payload.usuario,
-                        password: password,
+                    operarioABuscar = {
+                        nombre: req.payload.username,
+                        password: password
                     }
                     // await no continuar hasta acabar esto
                     // Buscar en usuarios con el usuario a buscar como criterio
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerUsuarios(db, usuarioABuscar))
-                        .then((usuarios) => {
+                        .then((db) => repositorio.obtenerOperarios(db, operarioABuscar))
+                        .then((operarios) => {
                             respuesta = false;
-                            if (usuarios == null || usuarios.length == 0 ) {
+                            if (operarios == null || operarios.length === 0 ) {
                                 respuesta =  false
                             } else {
                                 // On correct authentication
                                 req.cookieAuth.set({
-                                    usuario: usuarios[0].usuario,
-                                    secreto : "secreto"
+                                    usuario: operarios[0].nombre,
+                                    secreto : server.methods.getSecret()
                                 });
-
                                 respuesta = true
                             }
                         })
