@@ -143,15 +143,17 @@ module.exports = { // Permite hacer futuros imports
                     }
 
                     // The search criteria in mongodb relies on the credentials travelling with the cookie
-                    // When we crate an add, we make the creator the user stored in the cookie
+                    // When we crate an ad, we make the creator the user stored in the cookie
+
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
                     var criterio = { "usuario" : req.auth.credentials };
                     // cookieAuth
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerAnunciosPg(db, pg, criterio))
-                        .then((anuncios) => {
-                            anunciosEjemplo = anuncios;
+                        .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
+                        .then((tareas) => {
+                            misTareas = tareas;
 
-                            pgUltima = anunciosEjemplo.total/2;
+                            pgUltima = misTareas.total/2;
                             // La página 2.5 no existe
                             // Si excede sumar 1 y quitar los decimales
                             if (pgUltima % 2 > 0 ){
@@ -170,7 +172,7 @@ module.exports = { // Permite hacer futuros imports
                     }
                     return h.view('misanuncios',
                         {
-                            anuncios: anunciosEjemplo,
+                            anuncios: misTareas,
                             paginas: paginas,
                             valor: pg,
                             usuarioAutenticado: req.auth.credentials

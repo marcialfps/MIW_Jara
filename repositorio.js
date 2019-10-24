@@ -20,7 +20,7 @@ module.exports = {
                 if (err) {
                     resolve(null);
                 } else {
-                    // lista de anuncios
+                    // lista de tareas
                     resolve(result);
                 }
                 db.close();
@@ -29,16 +29,16 @@ module.exports = {
 
         return promise;
     },
-    obtenerAnunciosPg : async (db, pg, criterio) => {
+    obtenerTareasPg : async (db, pg, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
+            var collection = db.collection('tareas');
             collection.count( criterio, (err, count) => {
                 collection.find(criterio).skip( (pg-1)*2 ).limit( 2 )
                     .toArray( (err, result) => {
                         if (err) {
                             resolve(null);
                         } else {
-                            // Guardar el total de anuncios
+                            // Guardar el total de tareas
                             result.total = count;
                             resolve(result);
                         }
@@ -46,7 +46,6 @@ module.exports = {
                     });
             })
         });
-
         return promise;
     },
     obtenerOperarios : async (db, criterio) => {
