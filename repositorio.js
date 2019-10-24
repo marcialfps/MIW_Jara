@@ -64,10 +64,10 @@ module.exports = {
         });
         return promise;
     },
-    insertarUsuario : async (db, usuario) => {
+    insertarOperario : async (db, operario) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('usuarios');
-            collection.insertOne(usuario, (err, result) => {
+            var collection = db.collection('operarios');
+            collection.insertOne(operario, (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
@@ -77,7 +77,6 @@ module.exports = {
                 db.close();
             });
         });
-
         return promise;
     },
     insertarAnuncio : async (db, anuncio) => {

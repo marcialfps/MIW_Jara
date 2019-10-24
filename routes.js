@@ -246,29 +246,29 @@ module.exports = { // Permite hacer futuros imports
                     password = require('crypto').createHmac('sha256', server.methods.getSecret())
                         .update(req.payload.password).digest('hex');
 
-                    usuario = {
-                        usuario: req.payload.usuario,
+                    operario = {
+                        nombre: req.payload.username,
                         password: password,
+                        tipo: req.payload.type,
+                        seguidas: []
                     }
-                    // await no continuar hasta acabar esto
-                    // Da valor a respuesta
                     await repositorio.conexion()
-                        .then((db) => repositorio.insertarUsuario(db, usuario))
+                        .then((db) => repositorio.insertarOperario(db, operario))
                         .then((id) => {
                             respuesta = false;
+                            // Error al insertar
                             if (id == null) {
                                 respuesta =  false
                             } else {
+                                // Exito al insertar
                                 respuesta = true;
-
                             }
                         })
-
                     if (respuesta){
-                        return h.redirect('/login?mensaje=Usuario registrado&tipoMensaje=success')
+                        return h.redirect('/login?mensaje=Operario registrado&tipoMensaje=success')
                     }
                     else {
-                        return h.redirect('/registro?mensaje=No se pudo crear el usuario&tipoMensaje=danger')
+                        return h.redirect('/registro?mensaje=No se pudo crear el operario&tipoMensaje=danger')
                     }
                 }
             },
