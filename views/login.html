@@ -5,7 +5,7 @@
             <div class="uk-margin">
                 <div class="uk-inline uk-width-1-1">
                     <span class="uk-form-icon" uk-icon="icon: user"></span>
-                    <input class="uk-input" name="username"
+                    <input id="first-input" class="uk-input" name="username"
                            placeholder="Nombre de usuario" type="text">
                 </div>
             </div>
@@ -28,3 +28,6 @@
         </form>
     </div>
 </section>
+<script>
+    $( "#first-input" ).focus();
+</script>

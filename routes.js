@@ -251,6 +251,25 @@ module.exports = { // Permite hacer futuros imports
                         tipo: req.payload.type,
                         seguidas: []
                     }
+
+                    // Comprobar usuario no existe ya
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerOperarios(db, {nombre: operario.nombre}))
+                        .then((operarios) => {
+                            existe = false;
+                            if (operarios != null && operarios.length === 0 ) {
+                                existe =  false
+                            } else {
+                                // El usuario a crear existe ya
+                                existe = true
+                            }
+                        })
+
+                    // Si ya existe, parar el registro
+                    if (existe){
+                        return h.redirect('/registro?mensaje=Nombre de usuario ya existente&tipoMensaje=warning')
+                    }
+
                     await repositorio.conexion()
                         .then((db) => repositorio.insertarOperario(db, operario))
                         .then((id) => {
