@@ -332,12 +332,12 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
-                path: '/publicar',
+                path: '/crear',
                 options: {
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    return h.view('publicar',
+                    return h.view('crear',
                         {
                             usuario: req.auth.credentials,
                             usuarioAutenticado: req.auth.credentials
