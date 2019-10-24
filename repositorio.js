@@ -49,14 +49,14 @@ module.exports = {
 
         return promise;
     },
-    obtenerUsuarios : async (db, criterio) => {
+    obtenerOperarios : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('usuarios');
+            var collection = db.collection('operarios');
             collection.find(criterio).toArray( (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
-                    // lista de anuncios
+                    // operarios que cumplen el filtro
                     resolve(result);
                 }
                 db.close();
@@ -64,10 +64,10 @@ module.exports = {
         });
         return promise;
     },
-    insertarUsuario : async (db, usuario) => {
+    insertarOperario : async (db, operario) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('usuarios');
-            collection.insertOne(usuario, (err, result) => {
+            var collection = db.collection('operarios');
+            collection.insertOne(operario, (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
@@ -77,7 +77,6 @@ module.exports = {
                 db.close();
             });
         });
-
         return promise;
     },
     insertarAnuncio : async (db, anuncio) => {
