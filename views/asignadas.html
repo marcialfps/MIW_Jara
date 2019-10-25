@@ -30,9 +30,11 @@
                     </td>
                     <td>
                         {{#isInList id ../tareasSeguidas }}
-                            <button id="seguir-{{id}}" class="uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir-{{id}}; cls: uk-button-primary;" >
-                                <span data-uk-icon="bookmark"></span>
-                            </button>
+                            <div id="container-{{id}}">
+                                <button id="seguir-{{id}}" class="uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir-{{id}}; cls: uk-button-primary;" >
+                                    <span data-uk-icon="bookmark"></span>
+                                </button>
+                            </div>
                             <script>
                                 $("#seguir-{{id}}" ).click(function() {
                                     $.get( "/no-favorita/{{ id }}", function( data ) {
@@ -40,14 +42,16 @@
                                         var numberPage = "{{../valor}}";
                                         var urlUpdate = '/asignadas';
                                         urlUpdate += "?pg="+numberPage;
-                                        $("#seguir-{{id}}").innerHTML = load(urlUpdate + " #seguir-{{id}}").innerHTML;
+                                        $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
                                     });
                                 });
                             </script>
                         {{else}}
-                            <button id="seguir-{{id}}" class="uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
-                                <span data-uk-icon="bookmark"></span>
-                            </button>
+                            <div id="container-{{id}}">
+                                <button id="seguir-{{id}}" class="uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
+                                    <span data-uk-icon="bookmark"></span>
+                                </button>
+                            </div>
                             <script>
                                 $("#seguir-{{id}}" ).click(function() {
                                     $.get( "/favorita/{{ id }}", function( data ) {
@@ -55,7 +59,7 @@
                                         var numberPage = "{{../valor}}";
                                         var urlUpdate = '/asignadas';
                                         urlUpdate += "?pg="+numberPage;
-                                        $("#seguir-{{id}}").innerHTML = load(urlUpdate + " #seguir-{{id}}").innerHTML;
+                                        $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
                                     });
                                 });
                             </script>
