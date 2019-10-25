@@ -131,7 +131,7 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
-                path: '/misanuncios',
+                path: '/asignadas',
                 options: {
                     auth: 'auth-registrado'
                 },
@@ -146,11 +146,15 @@ module.exports = { // Permite hacer futuros imports
                     // When we crate an ad, we make the creator the user stored in the cookie
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { encargados: { nombre: req.auth.credentials } }
+                    let criterio = { encargados: req.auth.credentials }
                     // cookieAuth
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
+
+                            for (i = 0; i < tareas.length; i++){
+                                tareas[i].id = tareas[i]._id.toString()
+                            }
                             misTareas = tareas;
 
                             pgUltima = misTareas.total/2;
@@ -170,7 +174,7 @@ module.exports = { // Permite hacer futuros imports
                             paginas.push({valor: i});
                         }
                     }
-                    return h.view('misanuncios',
+                    return h.view('asignadas',
                         {
                             tareas: misTareas,
                             paginas: paginas,

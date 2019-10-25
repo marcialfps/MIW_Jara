@@ -77,8 +77,20 @@ const iniciarServer = async () => {
             return a - b;
         })
         // Helper method to prevent showing the pagination page "0" when we are on page "1"
-        handlebars.registerHelper('ifGreaterThanOne', function(n, options) {
-            return (n > 1) ? options.fn(this) : options.inverse(this);
+        handlebars.registerHelper('ifGreaterThanOne', function(page, options) {
+            return (page > 1) ? options.fn(this) : options.inverse(this);
+        });
+        // Metodo de handlebars para saber desde una plantilla HTML si es estado de una tarea esta en estado "Asignada"
+        handlebars.registerHelper('isAsignada', function(estado, options) {
+            return ("Asignada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
+        });
+        // Metodo de handlebars para saber desde una plantilla si es estado de una tarea esta en estado "En progreso"
+        handlebars.registerHelper('isInProgress', function(estado, options) {
+            return ("En progreso".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
+        });
+        // Metodo de handlebars para saber desde una plantilla si es estado de una tarea esta en estado "Finalizada"
+        handlebars.registerHelper('isFinished', function(estado, options) {
+            return ("Finalizada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
         });
 
         await server.register(routes);

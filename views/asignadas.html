@@ -1,0 +1,63 @@
+<section class="uk-section">
+    <div class="uk-container">
+        <div class="uk-overflow-auto">
+            <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+                <thead>
+                <tr>
+                    <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
+                    <th class="uk-table-expand uk-visible@m">Descripción</th>
+                    <th class="uk-width-small">Estado</th>
+                    <th class="uk-width-small uk-text-center">En seguimiento</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each tareas}}
+                <tr>
+                    <td>{{ titulo }}</td>
+                    <td class="uk-visible@m">{{ descripcion }}</td>
+                    <td>
+                        {{#isAsignada estado}}
+                            <p class="uk-text-uppercase uk-text-primary">Asignada</p>
+                        {{/isAsignada}}
+
+                        {{#isInProgress estado}}
+                            <p class="uk-text-uppercase uk-text-warning">En progreso</p>
+                        {{/isInProgress}}
+
+                        {{#isFinished estado}}
+                            <p class="uk-text-uppercase uk-text-success">Finalizada</p>
+                        {{/isFinished}}
+
+                    </td>
+                    <td>
+                        <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
+                            <span data-uk-icon="bookmark"></span>
+                        </button>
+                        <button id="seguir2-{{id}}" class="uk-align-center uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir2-{{id}}; cls: uk-button-primary;" >
+                            <span data-uk-icon="bookmark"></span>
+                        </button>
+                    </td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            {{#ifGreaterThanOne valor}}
+                <li>
+                    <a href="/misanuncios?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
+                </li>
+            {{/ifGreaterThanOne}}
+            <li class="uk-active">
+                <a href="/misanuncios?pg={{ valor }}">{{ valor }}</a>
+            </li>
+            <li>
+                <a href="/misanuncios?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+            </li>
+
+        </ul>
+
+    </div>
+</section>
