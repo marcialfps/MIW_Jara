@@ -29,7 +29,6 @@ module.exports = {
 
         return promise;
     },
-
     obtenerTareasPg : async (db, pg, criterio) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
@@ -46,6 +45,34 @@ module.exports = {
                         db.close();
                     });
             })
+        });
+        return promise;
+    },
+    marcarTareaFavorita : async (db, nombreUsuario, idTarea) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection('operarios');
+            collection.findOneAndUpdate({nombre: nombreUsuario}, {$push: {seguidas: idTarea}}, {}, (err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    resolve(result.ok);
+                }
+                db.close();
+            });
+        });
+        return promise;
+    },
+    desmarcarTareaFavorita : async (db, nombreUsuario, idTarea) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection('operarios');
+            collection.findOneAndUpdate({nombre: nombreUsuario}, {$pull: {seguidas: idTarea}}, {}, (err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    resolve(result.ok);
+                }
+                db.close();
+            });
         });
         return promise;
     },

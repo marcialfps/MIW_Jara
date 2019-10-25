@@ -29,15 +29,37 @@
                         {{/isFinished}}
                     </td>
                     <td>
-                        {{#isFavorita id }}
-                            <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir2-{{id}}; cls: uk-button-primary;" >
+                        {{#isInList id ../tareasSeguidas }}
+                            <button id="seguir-{{id}}" class="uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir-{{id}}; cls: uk-button-primary;" >
                                 <span data-uk-icon="bookmark"></span>
                             </button>
+                            <script>
+                                $("#seguir-{{id}}" ).click(function() {
+                                    $.get( "/no-favorita/{{ id }}", function( data ) {
+                                        /* Para no perder la página en la que estamos guardamos el param page */
+                                        var numberPage = "{{../valor}}";
+                                        var urlUpdate = '/asignadas';
+                                        urlUpdate += "?pg="+numberPage;
+                                        $("#seguir-{{id}}").innerHTML = load(urlUpdate + " #seguir-{{id}}").innerHTML;
+                                    });
+                                });
+                            </script>
                         {{else}}
-                            <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
+                            <button id="seguir-{{id}}" class="uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
                                 <span data-uk-icon="bookmark"></span>
                             </button>
-                        {{/isFavorita}}
+                            <script>
+                                $("#seguir-{{id}}" ).click(function() {
+                                    $.get( "/favorita/{{ id }}", function( data ) {
+                                        /* Para no perder la página en la que estamos guardamos el param page */
+                                        var numberPage = "{{../valor}}";
+                                        var urlUpdate = '/asignadas';
+                                        urlUpdate += "?pg="+numberPage;
+                                        $("#seguir-{{id}}").innerHTML = load(urlUpdate + " #seguir-{{id}}").innerHTML;
+                                    });
+                                });
+                            </script>
+                        {{/isInList}}
                     </td>
                 </tr>
                 {{/each}}
@@ -49,14 +71,14 @@
         <ul class="uk-pagination uk-flex-center" uk-margin>
             {{#ifGreaterThanOne valor}}
                 <li>
-                    <a href="/misanuncios?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
+                    <a href="/asignadas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
                 </li>
             {{/ifGreaterThanOne}}
             <li class="uk-active">
-                <a href="/misanuncios?pg={{ valor }}">{{ valor }}</a>
+                <a href="/asignadas?pg={{ valor }}">{{ valor }}</a>
             </li>
             <li>
-                <a href="/misanuncios?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+                <a href="/asignadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
             </li>
 
         </ul>

@@ -22,6 +22,80 @@ module.exports = { // Permite hacer futuros imports
         server.route([
             {
                 method: 'GET',
+                path: '/favorita/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder marcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)}
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0){
+                                return false
+                            }
+                            tarea = tareas[0];
+                        })
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0){
+                                    return false
+                                }
+                                // Tarea marcada favorita
+                                return true
+                            })
+                    }
+                    // If not authorized, do nothing
+                    return false
+                }
+            },
+            {
+                method: 'GET',
+                path: '/no-favorita/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder desmarcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)}
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0){
+                                return false
+                            }
+                            tarea = tareas[0];
+                        })
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0){
+                                    return false
+                                }
+                                // Tarea marcada favorita
+                                return true
+                            })
+                    }
+                    // If not authorized, do nothing
+                    return false
+                }
+            },
+            {
+                method: 'GET',
                 path: '/anuncio/{id}/eliminar',
                 options: {
                     auth: 'auth-registrado'
@@ -151,7 +225,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
                             if (tareas == null){
-                                return h.redirect('/=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
                             }
                             // Guardar el ID de la tarea como string para el ID de los botones de favoritas
                             for (i = 0; i < tareas.length; i++){
@@ -183,7 +257,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerSeguidasByName(db, req.auth.credentials))
                         .then((tareasSeguidas) => {
                             if (tareasSeguidas == null){
-                                return h.redirect('/=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
                             }
                             misTareasSeguidas = tareasSeguidas;
                         })

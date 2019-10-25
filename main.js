@@ -93,8 +93,8 @@ const iniciarServer = async () => {
             return ("Finalizada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
         });
         // Metodo de handlebars para saber si un elemento está dentro de una lista
-        handlebars.registerHelper('isFavorita', function(item, options) {
-            return (options.data.root.tareasSeguidas.includes(item)) ? options.fn(this) : options.inverse(this);
+        handlebars.registerHelper('isInList', function(item, list, options) {
+            return (list.includes(item)) ? options.fn(this) : options.inverse(this);
         });
 
 
