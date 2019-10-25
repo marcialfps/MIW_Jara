@@ -92,6 +92,11 @@ const iniciarServer = async () => {
         handlebars.registerHelper('isFinished', function(estado, options) {
             return ("Finalizada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
         });
+        // Metodo de handlebars para saber si un elemento está dentro de una lista
+        handlebars.registerHelper('isFavorita', function(item, options) {
+            return (options.data.root.tareasSeguidas.includes(item)) ? options.fn(this) : options.inverse(this);
+        });
+
 
         await server.register(routes);
         // Configure hapi views

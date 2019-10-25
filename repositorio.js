@@ -29,6 +29,7 @@ module.exports = {
 
         return promise;
     },
+
     obtenerTareasPg : async (db, pg, criterio) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
@@ -57,6 +58,22 @@ module.exports = {
                 } else {
                     // operarios que cumplen el filtro
                     resolve(result);
+                }
+                db.close();
+            });
+        });
+        return promise;
+    },
+    // Devuelve la lista de ids de tareas seguidas del operario en sesion
+    obtenerSeguidasByName : async (db, nombreUsuario) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection('operarios');
+            collection.find({nombre: nombreUsuario}, {seguidas: 1}).toArray( (err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    // operarios que cumplen el filtro
+                    resolve(result[0].seguidas);
                 }
                 db.close();
             });

@@ -147,11 +147,13 @@ module.exports = { // Permite hacer futuros imports
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
                     let criterio = { encargados: req.auth.credentials }
-                    // cookieAuth
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
-
+                            if (tareas == null){
+                                return h.redirect('/=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                            }
+                            // Guardar el ID de la tarea como string para el ID de los botones de favoritas
                             for (i = 0; i < tareas.length; i++){
                                 tareas[i].id = tareas[i]._id.toString()
                             }
@@ -174,9 +176,21 @@ module.exports = { // Permite hacer futuros imports
                             paginas.push({valor: i});
                         }
                     }
+
+                    // Vamos a rescatar todas las tareas favoritas del operario en sesion para poder
+                    // mostrar en la vista si las esta siguiendo ya o no y poner botones en consecuencia
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerSeguidasByName(db, req.auth.credentials))
+                        .then((tareasSeguidas) => {
+                            if (tareasSeguidas == null){
+                                return h.redirect('/=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                            }
+                            misTareasSeguidas = tareasSeguidas;
+                        })
                     return h.view('asignadas',
                         {
                             tareas: misTareas,
+                            tareasSeguidas: misTareasSeguidas,
                             paginas: paginas,
                             valor: pg,
                             usuarioAutenticado: req.auth.credentials
@@ -227,7 +241,7 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Autenticado correctamente&tipoMensaje=success')
+                        return h.redirect('/?mensaje=Autenticado correctamente&tipoMensaje=success')
                     }
                     else {
                         return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger')

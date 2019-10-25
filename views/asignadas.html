@@ -7,7 +7,7 @@
                     <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
                     <th class="uk-table-expand uk-visible@m">Descripción</th>
                     <th class="uk-width-small">Estado</th>
-                    <th class="uk-width-small uk-text-center">En seguimiento</th>
+                    <th class="uk-width-small uk-text-center"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,15 +27,17 @@
                         {{#isFinished estado}}
                             <p class="uk-text-uppercase uk-text-success">Finalizada</p>
                         {{/isFinished}}
-
                     </td>
                     <td>
-                        <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
-                            <span data-uk-icon="bookmark"></span>
-                        </button>
-                        <button id="seguir2-{{id}}" class="uk-align-center uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir2-{{id}}; cls: uk-button-primary;" >
-                            <span data-uk-icon="bookmark"></span>
-                        </button>
+                        {{#isFavorita id }}
+                            <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir2-{{id}}; cls: uk-button-primary;" >
+                                <span data-uk-icon="bookmark"></span>
+                            </button>
+                        {{else}}
+                            <button id="seguir-{{id}}" class="uk-align-center uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
+                                <span data-uk-icon="bookmark"></span>
+                            </button>
+                        {{/isFavorita}}
                     </td>
                 </tr>
                 {{/each}}
