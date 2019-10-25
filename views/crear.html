@@ -15,27 +15,51 @@
 
                 <div class="uk-grid uk-margin">
                     <div class="uk-width-2-5">
-                            <label class="uk-form-label">Seleccionar operario</label>
-                            <select class="uk-select" name="operario"
-                                    required="true">
-                                {{#each operarios}}
-                                    <option value="{{nombre}}">{{nombre}}</option>
-                                {{/each}}
-                            </select>
-                    </div>
-                    <div class="uk-width-1-5">
-                        <label class="uk-form-label">Añadir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <button class="uk-button uk-button-primary">
-                            <span uk-icon="plus-circle"></span>
+                        <label class="uk-form-label">Seleccionar operario</label><br>
+                        <div>
+                        <select class="uk-select uk-width-3-5" name="operario" id="operario"
+                                required="true">
+                            {{#each operarios}}
+                                <option value="{{nombre}}">{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                        <button id="add" class="uk-button uk-button-primary uk-padding-remove" type="button">
+                            <span uk-icon="icon: plus-circle"></span>
                         </button>
+                        <button id="remove" class="uk-button uk-button-danger uk-padding-remove" type="button">
+                            <span uk-icon="icon: minus-circle"></span>
+                        </button>
+                        </div>
                     </div>
-                    <div class="uk-width-2-5">
+                    <div class="uk-width-3-5">
                         <label class="uk-form-label">Operario/s asignado/s</label>
-                        <input class="uk-input" type="text" disabled
-                               name="operarios-asignados" placeholder=""
-                               required="true">
+                        <input class="uk-input" type="text" readonly id="operarios-asignados"
+                               name="operariosasignados" required="true">
                     </div>
                 </div>
+
+                <script>
+                    var operarios = []
+
+                    $("#add").click(function () {
+                        for( var i = 0; i < operarios.length; i++){
+                            if ( operarios[i] === $("#operario").val()) {
+                                return
+                            }
+                        }
+                        operarios.push($("#operario").val())
+                        $("#operarios-asignados").val(operarios)
+                    })
+
+                    $("#remove").click(function () {
+                        for( var i = 0; i < operarios.length; i++){
+                            if ( operarios[i] === $("#operario").val()) {
+                                operarios.splice(i, 1);
+                            }
+                        }
+                        $("#operarios-asignados").val(operarios)
+                    })
+                </script>
 
                 <div class="uk-grid uk-margin">
                     <div class="uk-width-1-3">

@@ -289,14 +289,15 @@ module.exports = { // Permite hacer futuros imports
                 },
                 handler: async (req, h) => {
                     // Parse form data
+                    var today = new Date()
                     tarea = {
                         titulo: req.payload.titulo,
                         descripcion: req.payload.descripcion,
                         estado: "asignado",
-                        creacion: "",
-                        limite: "",
+                        creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
+                        limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
                         creador: req.auth.credentials ,
-                        asignados: req.payload.operarios-asignados ,
+                        asignados: req.payload.operariosasignados ,
                     }
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
