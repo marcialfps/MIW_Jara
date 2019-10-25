@@ -29,9 +29,9 @@ module.exports = {
 
         return promise;
     },
-    obtenerAnunciosPg : async (db, pg, criterio) => {
+    obtenerTareasPg : async (db, pg, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
+            var collection = db.collection('tareas');
             collection.count( criterio, (err, count) => {
                 collection.find(criterio).skip( (pg-1)*2 ).limit( 2 )
                     .toArray( (err, result) => {

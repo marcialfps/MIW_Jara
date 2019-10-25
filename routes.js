@@ -131,7 +131,7 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
-                path: '/misanuncios',
+                path: '/creadas',
                 options: {
                     auth: 'auth-registrado'
                 },
@@ -144,14 +144,14 @@ module.exports = { // Permite hacer futuros imports
 
                     // The search criteria in mongodb relies on the credentials travelling with the cookie
                     // When we crate an add, we make the creator the user stored in the cookie
-                    var criterio = { "usuario" : req.auth.credentials };
+                    var criterio = { "creador" : req.auth.credentials };
                     // cookieAuth
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerAnunciosPg(db, pg, criterio))
-                        .then((anuncios) => {
-                            anunciosEjemplo = anuncios;
+                        .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
+                        .then((tareas) => {
+                            tareasCreadas = tareas;
 
-                            pgUltima = anunciosEjemplo.total/2;
+                            pgUltima = tareasCreadas.total/2;
                             // La página 2.5 no existe
                             // Si excede sumar 1 y quitar los decimales
                             if (pgUltima % 2 > 0 ){
@@ -168,9 +168,9 @@ module.exports = { // Permite hacer futuros imports
                             paginas.push({valor: i});
                         }
                     }
-                    return h.view('misanuncios',
+                    return h.view('creadas',
                         {
-                            anuncios: anunciosEjemplo,
+                            tareas: tareasCreadas,
                             paginas: paginas,
                             valor: pg,
                             usuarioAutenticado: req.auth.credentials
@@ -314,10 +314,10 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Tarea creada&tipoMensaje=success')
+                        return h.redirect('/creadas?mensaje=Tarea creada&tipoMensaje=success')
                     }
                     else {
-                        return h.redirect('/publicar?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
+                        return h.redirect('/creadas?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
                     }
                 }
             },
