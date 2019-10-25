@@ -137,7 +137,7 @@ module.exports = { // Permite hacer futuros imports
                 },
                 handler: async (req, h) => {
                     // Pagination parameter with name "pg"
-                    var pg = parseInt(req.query.pg); // Es String !!!
+                    let pg = parseInt(req.query.pg); // Es String !!!
                     if ( req.query.pg == null){ // Puede no venir el param
                         pg = 1;
                     }
@@ -146,7 +146,7 @@ module.exports = { // Permite hacer futuros imports
                     // When we crate an ad, we make the creator the user stored in the cookie
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    var criterio = { "usuario" : req.auth.credentials };
+                    let criterio = { encargados: { nombre: req.auth.credentials } }
                     // cookieAuth
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
@@ -162,9 +162,9 @@ module.exports = { // Permite hacer futuros imports
                             }
                         })
 
-                    var paginas = [];
+                    let paginas = [];
                     for( i = 1; i <= pgUltima; i++){
-                        if ( i == pg ){
+                        if ( i === pg ){
                             paginas.push({valor: i , clase : "uk-active" });
                         } else {
                             paginas.push({valor: i});
@@ -172,7 +172,7 @@ module.exports = { // Permite hacer futuros imports
                     }
                     return h.view('misanuncios',
                         {
-                            anuncios: misTareas,
+                            tareas: misTareas,
                             paginas: paginas,
                             valor: pg,
                             usuarioAutenticado: req.auth.credentials
