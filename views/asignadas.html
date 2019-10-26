@@ -85,7 +85,7 @@
                                     }
                                     else {
                                         // Cambiar el comportamiento del boton para que sea consistente con la vista
-                                        if (urlBase["{{id}}"].localeCompare("favorita") === 0) {
+                                        if (urlBase["{{id}}"] === "favorita") {
                                             urlBase["{{id}}"] = "no-favorita";
                                         // Si se pudo contactar con BD, notificar la operacion
                                         UIkit.notification({
@@ -93,7 +93,6 @@
                                             status: "primary",
                                             pos: 'top-right'
                                         });
-
 
                                         }
                                         else {

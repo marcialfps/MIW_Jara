@@ -290,7 +290,7 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Autenticado correctamente&tipoMensaje=success')
+                        return h.redirect('/?mensaje=Autenticado correctamente&tipoMensaje=success')
                     }
                     else {
                         return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger')
@@ -446,13 +446,15 @@ module.exports = { // Permite hacer futuros imports
                 path: '/tareas',
                 handler: async (req, h) => {
                     // Hardcoded array of advertisements
-                    var criterio = {};
+                    let criterio = {};
                     if (req.query.criterio != null ){
-                        criterio = {
-                                "titulo" : {$regex : ".*"+req.query.criterio.trim()+".*",
-                                "estado" : req.query.estado
-                            }
-                        };
+                        let userInput = req.query.criterio.trim();
+                        criterio = {};
+                        if (req.query.estado !== "todo")
+                            criterio.estado = req.query.estado;
+
+                        if (userInput !== "")
+                            criterio.titulo = userInput;
                     }
 
                     await repositorio.conexion()
