@@ -1,6 +1,33 @@
-<section class="uk-section">
+<section class="uk-section custom-wrapper">
     <div class="uk-container">
         <div class="uk-overflow-auto">
+            {{#ifEqualThan nTareas 0}}
+                <h2 class="uk-margin">Parece que no tienes tareas creadas, ¿buscas alguna tarea?</h2>
+                <div class="uk-margin">
+                    <form action="/tareas">
+                        <div class="uk-inline uk-width-1-1">
+                            <span class="uk-form-icon" uk-icon="icon: search"></span>
+                            <input class="uk-input" type="text" name="criterio"
+                                   placeholder="Buscar...">
+                        </div>
+                        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                            <label><input class="uk-radio" type="radio" name="estado"
+                                          value="todo" checked> Todo</label>
+                            <label><input class="uk-radio" type="radio" name="estado"
+                                          value="asignado"> Asignado</label>
+                            <label><input class="uk-radio" type="radio" name="estado"
+                                          value="enprogreso"> En progreso</label>
+                            <label><input class="uk-radio" type="radio" name="estado"
+                                          value="finalizado"> Finalizado</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="uk-margin-large">
+                    <h4 class="uk-margin uk-padding-small uk-padding-remove-left">O tal vez quieras
+                        <a href="/crear">crear una tarea</a>
+                    </h4>
+                </div>
+            {{else}}
             <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
                 <thead>
                 <tr>
@@ -53,6 +80,6 @@
                 </li>
             {{/ifEqualThan}}
         </ul>
-
+        {{/ifEqualThan}}
     </div>
 </section>

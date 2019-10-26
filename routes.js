@@ -184,6 +184,7 @@ module.exports = { // Permite hacer futuros imports
                     return h.view('creadas',
                         {
                             tareas: tareasCreadas,
+                            nTareas: tareasCreadas.length,
                             paginas: paginas,
                             valor: pg,
                             pgUltima:pgUltima,
@@ -266,6 +267,7 @@ module.exports = { // Permite hacer futuros imports
                     return h.view('asignadas',
                         {
                             tareas: misTareas,
+                            nTareas: misTareas.length,
                             tareasSeguidas: misTareasSeguidas,
                             paginas: paginas,
                             valor: pg,
