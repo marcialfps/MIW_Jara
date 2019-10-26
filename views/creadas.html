@@ -5,15 +5,17 @@
                 <thead>
                 <tr>
                     <th class="uk-table-expand">Titulo</th>
-                    <th class="uk-width-small">Precio</th>
+                    <th class="uk-width-expand">Descripción</th>
+                    <th class="uk-width-small">Estado</th>
                     <th class="uk-width-small">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{#each anuncios}}
+                {{#each tareas}}
                 <tr>
                     <td >{{ titulo }}</td>
-                    <td >{{ precio }}</td>
+                    <td >{{ descripcion }}</td>
+                    <td >{{ estado }}</td>
                     <td>
                         <a class="uk-link" href="/anuncio/{{_id}}/modificar">
                             <span  uk-icon="pencil"></span>
@@ -37,14 +39,14 @@
         <ul class="uk-pagination uk-flex-center" uk-margin>
             {{#ifGreaterThanOne valor}}
                 <li>
-                    <a href="/misanuncios?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
+                    <a href="/creadas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
                 </li>
             {{/ifGreaterThanOne}}
             <li class="uk-active">
-                <a href="/misanuncios?pg={{ valor }}">{{ valor }}</a>
+                <a href="/creadas?pg={{ valor }}">{{ valor }}</a>
             </li>
             <li>
-                <a href="/misanuncios?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+                <a href="/creadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
             </li>
 
         </ul>

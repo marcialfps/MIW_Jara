@@ -22,80 +22,6 @@ module.exports = { // Permite hacer futuros imports
         server.route([
             {
                 method: 'GET',
-                path: '/favorita/{idTarea}',
-                options: {
-                    auth: 'auth-registrado'
-                },
-                handler: async (req, h) => {
-                    // Para poder marcar como favorita una tarea el usuario que lo haga debe ser su creador
-                    // o alguien a quien se le ha asignado
-                    // Recuperar la tarea y comprobarlo
-                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
-                    let ret = false;
-                    await repositorio.conexion()
-                        .then((db) => repositorio.obtenerTareas(db, criterio))
-                        .then((tareas) => {
-                            if (tareas == null || tareas.length === 0)
-                                ret = false
-                            else
-                                tarea = tareas[0];
-                        })
-                    // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
-                        // Actualizamos la tarea
-                        await repositorio.conexion()
-                            .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
-                            .then((tareaMarcada) => {
-                                if (tareaMarcada === 0)
-                                    ret = false
-                                else
-                                    ret = true  // Tarea marcada favorita
-                            })
-                    }
-                    // If not authorized, do nothing
-                    return ret;
-                }
-            },
-            {
-                method: 'GET',
-                path: '/no-favorita/{idTarea}',
-                options: {
-                    auth: 'auth-registrado'
-                },
-                handler: async (req, h) => {
-                    // Para poder desmarcar como favorita una tarea el usuario que lo haga debe ser su creador
-                    // o alguien a quien se le ha asignado
-                    // Recuperar la tarea y comprobarlo
-                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
-                    let ret = false;
-                    await repositorio.conexion()
-                        .then((db) => repositorio.obtenerTareas(db, criterio))
-                        .then((tareas) => {
-                            if (tareas == null || tareas.length === 0)
-                                ret = false
-                            else
-                                tarea = tareas[0];
-                        })
-                    // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
-                        // Actualizamos la tarea
-                        await repositorio.conexion()
-                            .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
-                            .then((tareaMarcada) => {
-                                if (tareaMarcada === 0)
-                                    ret = false;
-                                else
-                                    ret = true // Tarea marcada favorita
-                            })
-                    }
-                    // If not authorized, do nothing
-                    return ret
-                }
-            },
-            {
-                method: 'GET',
                 path: '/anuncio/{id}/eliminar',
                 options: {
                     auth: 'auth-registrado'
@@ -198,6 +124,55 @@ module.exports = { // Permite hacer futuros imports
                     return h.view('modificar',
                         {
                             anuncio: anuncio,
+                            usuarioAutenticado: req.auth.credentials
+                        },
+                        { layout: 'base'} );
+                }
+            },
+            {
+                method: 'GET',
+                path: '/creadas',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Pagination parameter with name "pg"
+                    var pg = parseInt(req.query.pg); // Es String !!!
+                    if ( req.query.pg == null){ // Puede no venir el param
+                        pg = 1;
+                    }
+
+                    // The search criteria in mongodb relies on the credentials travelling with the cookie
+                    // When we crate an add, we make the creator the user stored in the cookie
+                    var criterio = { "creador" : req.auth.credentials };
+                    // cookieAuth
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
+                        .then((tareas) => {
+                            tareasCreadas = tareas;
+
+                            pgUltima = tareasCreadas.total/2;
+                            // La página 2.5 no existe
+                            // Si excede sumar 1 y quitar los decimales
+                            if (pgUltima % 2 > 0 ){
+                                pgUltima = Math.trunc(pgUltima);
+                                pgUltima = pgUltima+1;
+                            }
+                        })
+
+                    var paginas = [];
+                    for( i = 1; i <= pgUltima; i++){
+                        if ( i == pg ){
+                            paginas.push({valor: i , clase : "uk-active" });
+                        } else {
+                            paginas.push({valor: i});
+                        }
+                    }
+                    return h.view('creadas',
+                        {
+                            tareas: tareasCreadas,
+                            paginas: paginas,
+                            valor: pg,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );
@@ -315,7 +290,7 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/?mensaje=Autenticado correctamente&tipoMensaje=success')
+                        return h.redirect('/misanuncios?mensaje=Autenticado correctamente&tipoMensaje=success')
                     }
                     else {
                         return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger')
@@ -427,10 +402,10 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Tarea creada&tipoMensaje=success')
+                        return h.redirect('/creadas?mensaje=Tarea creada&tipoMensaje=success')
                     }
                     else {
-                        return h.redirect('/publicar?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
+                        return h.redirect('/creadas?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
                     }
                 }
             },
