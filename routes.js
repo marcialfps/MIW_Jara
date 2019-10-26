@@ -503,11 +503,13 @@ module.exports = { // Permite hacer futuros imports
                     });
 
                     return h.view(
-                        'anuncios', // html principal
+                        'tareas', // html principal
                         { // data for the template
                             usuario: req.auth.credentials,
                             usuarioAutenticado: req.auth.credentials,
-                            anuncios: tareasEncontradas
+                            tareas: tareasEncontradas,
+                            nTareas: tareasEncontradas.length(),
+                            busqueda: req.query.criterio.trim()
                         },
                         { // which layout
                             layout: 'base'

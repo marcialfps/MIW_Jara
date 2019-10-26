@@ -1,0 +1,52 @@
+<section class="uk-section uk-section-default custom-wrapper">
+    <div class="uk-container">
+        {{#ifEqualThan nTareas 0}}
+        <h2 class="uk-margin">Sin resultados para "{{busqueda}}"</h2>
+        <div class="uk-margin">
+            <form action="/tareas">
+                <div class="uk-inline uk-width-1-1">
+                    <span class="uk-form-icon" uk-icon="icon: search"></span>
+                    <input class="uk-input" type="text" name="criterio"
+                           placeholder="Buscar...">
+                </div>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    <label><input class="uk-radio" type="radio" name="estado"
+                                  value="todo" checked> Todo</label>
+                    <label><input class="uk-radio" type="radio" name="estado"
+                                  value="asignado"> Asignado</label>
+                    <label><input class="uk-radio" type="radio" name="estado"
+                                  value="enprogreso"> En progreso</label>
+                    <label><input class="uk-radio" type="radio" name="estado"
+                                  value="finalizado"> Finalizado</label>
+                </div>
+            </form>
+        </div>
+        {{else}}
+        <!-- sin incluir uk-grid no va el grid -->
+        <div class="uk-child-width-1-2@m" uk-grid >
+            {{#each tareas}}
+            <div >
+                <div style="height:400px;"
+                     class="uk-card uk-card-default uk-grid uk-grid-collapse uk-child-width-1-2 uk-margin">
+                    <div class="uk-card-media-left uk-cover-container">
+                        <img style="height:400px;"
+                             class="uk-cover" src="/uploads/{{ _id }}.png">
+                    </div>
+                    <div>
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">{{ titulo }}</h3>
+                            <p>{{ descripcion }}.</p>
+                            <a class="uk-width-1-1 uk-button uk-button-secondary uk-button-small"
+                               href="/comprar/{{ _id }}">
+                                {{ precio }} €
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{/each}}
+        </div>
+        {{/ifEqualThan}}
+    </div>
+</section>
