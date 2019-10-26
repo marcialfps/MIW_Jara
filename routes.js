@@ -31,14 +31,15 @@ module.exports = { // Permite hacer futuros imports
                     // o alguien a quien se le ha asignado
                     // Recuperar la tarea y comprobarlo
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)}
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+                    let ret = false;
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareas(db, criterio))
                         .then((tareas) => {
-                            if (tareas == null || tareas.length === 0){
-                                return false
-                            }
-                            tarea = tareas[0];
+                            if (tareas == null || tareas.length === 0)
+                                ret = false
+                            else
+                                tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
                     if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
@@ -46,15 +47,14 @@ module.exports = { // Permite hacer futuros imports
                         await repositorio.conexion()
                             .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
                             .then((tareaMarcada) => {
-                                if (tareaMarcada === 0){
-                                    return false
-                                }
-                                // Tarea marcada favorita
-                                return true
+                                if (tareaMarcada === 0)
+                                    ret = false
+                                else
+                                    ret = true  // Tarea marcada favorita
                             })
                     }
                     // If not authorized, do nothing
-                    return false
+                    return ret;
                 }
             },
             {
@@ -68,14 +68,15 @@ module.exports = { // Permite hacer futuros imports
                     // o alguien a quien se le ha asignado
                     // Recuperar la tarea y comprobarlo
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)}
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+                    let ret = false;
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareas(db, criterio))
                         .then((tareas) => {
-                            if (tareas == null || tareas.length === 0){
-                                return false
-                            }
-                            tarea = tareas[0];
+                            if (tareas == null || tareas.length === 0)
+                                ret = false
+                            else
+                                tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
                     if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
@@ -83,15 +84,14 @@ module.exports = { // Permite hacer futuros imports
                         await repositorio.conexion()
                             .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
                             .then((tareaMarcada) => {
-                                if (tareaMarcada === 0){
-                                    return false
-                                }
-                                // Tarea marcada favorita
-                                return true
+                                if (tareaMarcada === 0)
+                                    ret = false;
+                                else
+                                    ret = true // Tarea marcada favorita
                             })
                     }
                     // If not authorized, do nothing
-                    return false
+                    return ret
                 }
             },
             {

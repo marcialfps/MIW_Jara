@@ -28,42 +28,64 @@
                             <p class="uk-text-uppercase uk-text-success">Finalizada</p>
                         {{/isFinished}}
                     </td>
+                    <script>let urlBase = {}</script>
                     <td>
                         {{#isInList id ../tareasSeguidas }}
-                            <div id="container-{{id}}">
-                                <button id="seguir-{{id}}" class="uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir-{{id}}; cls: uk-button-primary;" >
-                                    <span data-uk-icon="bookmark"></span>
+                            <div id="container-{{id}}" style="margin: auto; width: fit-content">
+                                <button style="min-width: 85px;" data-uk-icon="bookmark" id="seguir-{{id}}" class="uk-button uk-button-default uk-button-primary" type="button" uk-toggle="target: #seguir-{{id}}; cls: uk-button-primary;" >
                                 </button>
                             </div>
                             <script>
-                                $("#seguir-{{id}}" ).click(function() {
-                                    $.get( "/no-favorita/{{ id }}", function( data ) {
-                                        /* Para no perder la página en la que estamos guardamos el param page */
-                                        var numberPage = "{{../valor}}";
-                                        var urlUpdate = '/asignadas';
-                                        urlUpdate += "?pg="+numberPage;
-                                        $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
-                                    });
-                                });
+                                urlBase["{{id}}"] = "no-favorita"
                             </script>
+                    <!-- Mover el script abajo del todo y dejar solo uno y según si es favorita o no inicializar una variable (una variable por tarea) que diga al script por qué redirección empezar-->
                         {{else}}
                             <div id="container-{{id}}">
-                                <button id="seguir-{{id}}" class="uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:hover; cls: uk-button-primary;" >
-                                    <span data-uk-icon="bookmark"></span>
+                                <button style="min-width: 85px;" data-uk-icon="bookmark" id="seguir-{{id}}" class="uk-button uk-button-default" type="button" uk-toggle="target: #seguir-{{id}}; mode:click; cls: uk-button-primary;"  >
                                 </button>
                             </div>
                             <script>
-                                $("#seguir-{{id}}" ).click(function() {
-                                    $.get( "/favorita/{{ id }}", function( data ) {
-                                        /* Para no perder la página en la que estamos guardamos el param page */
-                                        var numberPage = "{{../valor}}";
-                                        var urlUpdate = '/asignadas';
-                                        urlUpdate += "?pg="+numberPage;
-                                        $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
-                                    });
-                                });
+                                urlBase["{{id}}"] = "favorita"
                             </script>
+
                         {{/isInList}}
+                        <script>
+                            $("#container-{{id}}").click(function() {
+                                $.get( "/" + urlBase["{{id}}"] + "/{{ id }}", function( data ) {
+                                    /* Para no perder la página en la que estamos guardamos el param page */
+                                    var numberPage = "{{../valor}}";
+                                    var urlUpdate = '/asignadas';
+                                    urlUpdate += "?pg="+numberPage;
+                                    $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
+                                    console.log(data)
+                                    // Si ha habido un fallo al contactar con la BD y el controlador devolvió false, avisar:
+                                    if (data === false)
+                                        UIkit.notification({message: '<span uk-icon=\'icon: info\'></span> Ha habido un error procesando su petición', status: "danger", pos: 'top-right'});
+                                    // Siempre cambiar el comportamiento del boton para que sa consistente con la vista
+                                    if (urlBase["{{id}}"].localeCompare("favorita") === 0) {
+                                        urlBase["{{id}}"] = "no-favorita";
+                                        // Si se pudo contactar con BD, notificar la operacion
+                                        if (data === true){
+                                            UIkit.notification({
+                                                message: '<span uk-icon=\'icon: plus\'></span> Incidencia añadida a seguimiento',
+                                                status: "primary",
+                                                pos: 'top-right'
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        urlBase["{{id}}"] = "favorita";
+                                        // Si se pudo contactar con BD, notificar la operacion
+                                        if (data === true){
+                                            UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Incidencia eliminada de seguimiento', status: "primary", pos: 'top-right'})
+                                        }
+                                    }
+
+                                }).fail(function () { // Si no se pudo hacer la peticion HTTP, avisar:
+                                    UIkit.notification({message: '<span uk-icon=\'icon: info\'></span> Ha habido un error procesando su petición', status: "danger", pos: 'top-right'});
+                            })
+                            })
+                        </script>
                     </td>
                 </tr>
                 {{/each}}
