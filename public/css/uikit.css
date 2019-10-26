@@ -169,7 +169,6 @@ video {
 /* 4 */
 @supports (display: block) {
   svg {
-    max-width: 100%;
     height: auto;
     box-sizing: border-box;
   }
