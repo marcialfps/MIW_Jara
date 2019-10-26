@@ -395,65 +395,65 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'POST',
-                path: '/publicar',
+                path: '/crear',
                 // Options of the handlers, we specify
                 options : {
-                    auth: 'auth-registrado',
-                    payload: {
-                        output: 'stream'
-                    }
+                    auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
                     // Parse form data
-                    anuncio = {
-                        usuario: req.auth.credentials ,
+                    var today = new Date()
+                    tarea = {
                         titulo: req.payload.titulo,
                         descripcion: req.payload.descripcion,
-                        categoria: req.payload.categoria,
-                        precio: Number.parseFloat(req.payload.precio),
+                        estado: "asignado",
+                        creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
+                        limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
+                        creador: req.auth.credentials ,
+                        asignados: req.payload.operariosasignados ,
                     }
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
                     await repositorio.conexion()
-                        .then((db) => repositorio.insertarAnuncio(db, anuncio))
+                        .then((db) => repositorio.insertarTarea(db, tarea))
                         .then((id) => {
                             respuesta = false;
                             if (id == null) {
                                 respuesta =  false
                             } else {
                                 respuesta = true
-                                idAnuncio = id;
+                                idTarea = id;
                             }
                         })
-                    // Once inserted the ad...
-                    binario = req.payload.foto._data; // photo binary
-                    extension = req.payload.foto.hapi.filename.split('.')[1]; // photo extension
-                    // Upload the photo with the same name as the ad identifier.
-                    // module exports.funtion to call functions in the module itself
-                    if (req.payload.foto){
-                        await module.exports.utilSubirFichero(
-                            binario, idAnuncio, extension);
-                    }
 
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Anuncio publicado&tipoMensaje=success')
+                        return h.redirect('/misanuncios?mensaje=Tarea creada&tipoMensaje=success')
                     }
                     else {
-                        return h.redirect('/publicar?mensaje=No se pudo publicar el anuncio&tipoMensaje=danger')
+                        return h.redirect('/publicar?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
                     }
                 }
             },
             {
                 method: 'GET',
-                path: '/publicar',
+                path: '/crear',
                 options: {
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    return h.view('publicar',
+                    var operariosRecibidos = []
+
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerOperarios(db, {}))
+                        .then((operarios) => {
+                            operariosRecibidos = operarios;
+                        })
+
+                    return h.view('crear',
                         {
                             usuario: req.auth.credentials,
-                            usuarioAutenticado: req.auth.credentials
+                            usuarioAutenticado: req.auth.credentials,
+                            operarios: operariosRecibidos
                         },
                         { layout: 'base'});
                 }

@@ -122,10 +122,10 @@ module.exports = {
         });
         return promise;
     },
-    insertarAnuncio : async (db, anuncio) => {
+    insertarTarea : async (db, tarea) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
-            collection.insertOne(anuncio, (err, result) => {
+            var collection = db.collection('tareas');
+            collection.insertOne(tarea, (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
