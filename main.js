@@ -82,15 +82,15 @@ const iniciarServer = async () => {
         });
         // Metodo de handlebars para saber desde una plantilla HTML si es estado de una tarea esta en estado "Asignada"
         handlebars.registerHelper('isAsignada', function(estado, options) {
-            return ("Asignada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
+            return ("Asignada".localeCompare(estado) === 0) ? options.fn(this) : options.inverse(this);
         });
         // Metodo de handlebars para saber desde una plantilla si es estado de una tarea esta en estado "En progreso"
         handlebars.registerHelper('isInProgress', function(estado, options) {
-            return ("En progreso".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
+            return ("En progreso".localeCompare(estado) === 0) ? options.fn(this) : options.inverse(this);
         });
         // Metodo de handlebars para saber desde una plantilla si es estado de una tarea esta en estado "Finalizada"
         handlebars.registerHelper('isFinished', function(estado, options) {
-            return ("Finalizada".localeCompare(estado)) ? options.inverse(this) : options.fn(this);
+            return ("Finalizada".localeCompare(estado) === 0) ? options.fn(this) : options.inverse(this);
         });
         // Metodo de handlebars para saber si un elemento está dentro de una lista
         handlebars.registerHelper('isInList', function(item, list, options) {

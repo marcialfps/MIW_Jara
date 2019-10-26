@@ -42,7 +42,7 @@ module.exports = { // Permite hacer futuros imports
                                 tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
                         // Actualizamos la tarea
                         await repositorio.conexion()
                             .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
@@ -79,7 +79,7 @@ module.exports = { // Permite hacer futuros imports
                                 tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.crador.localeCompare(req.auth.credentials)){
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
                         // Actualizamos la tarea
                         await repositorio.conexion()
                             .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
