@@ -77,8 +77,11 @@ const iniciarServer = async () => {
             return a - b;
         })
         // Helper method to prevent showing the pagination page "0" when we are on page "1"
-        handlebars.registerHelper('ifGreaterThanOne', function(page, options) {
-            return (page > 1) ? options.fn(this) : options.inverse(this);
+        handlebars.registerHelper('ifGreaterThan', function(item1, item2, options) {
+            return (item1 > item2) ? options.fn(this) : options.inverse(this);
+        });
+        handlebars.registerHelper('ifEqualThan', function(item1, item2, options) {
+            return (item1 === item2) ? options.fn(this) : options.inverse(this);
         });
         // Metodo de handlebars para saber desde una plantilla HTML si es estado de una tarea esta en estado "Asignada"
         handlebars.registerHelper('isAsignada', function(estado, options) {

@@ -136,14 +136,28 @@ module.exports = { // Permite hacer futuros imports
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    // Pagination parameter with name "pg"
-                    var pg = parseInt(req.query.pg); // Es String !!!
-                    if ( req.query.pg == null){ // Puede no venir el param
-                        pg = 1;
-                    }
 
+                    // Pagination parameter with name "pg"
+                    let pg = parseInt(req.query.pg);
+                    let pgUltima = 1;
+
+
+                    // Obtener el numero de tareas existentes
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", {}))
+                        .then((nTareas) => {
+                            if (nTareas == null)
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+
+                            pgUltima = nTareas/10;
+
+
+                            if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
+                                pg = 1;
+                            }
+                        });
                     // The search criteria in mongodb relies on the credentials travelling with the cookie
-                    // When we crate an add, we make the creator the user stored in the cookie
+                    // When we crate an ad, we make the creator the user stored in the cookie
                     var criterio = { "creador" : req.auth.credentials };
                     // cookieAuth
                     await repositorio.conexion()
@@ -151,14 +165,13 @@ module.exports = { // Permite hacer futuros imports
                         .then((tareas) => {
                             tareasCreadas = tareas;
 
-                            pgUltima = tareasCreadas.total/2;
                             // La página 2.5 no existe
                             // Si excede sumar 1 y quitar los decimales
-                            if (pgUltima % 2 > 0 ){
+                            if (pgUltima % 10 > 0 ){
                                 pgUltima = Math.trunc(pgUltima);
                                 pgUltima = pgUltima+1;
                             }
-                        })
+                        });
 
                     var paginas = [];
                     for( i = 1; i <= pgUltima; i++){
@@ -173,6 +186,7 @@ module.exports = { // Permite hacer futuros imports
                             tareas: tareasCreadas,
                             paginas: paginas,
                             valor: pg,
+                            pgUltima:pgUltima,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );
@@ -186,16 +200,29 @@ module.exports = { // Permite hacer futuros imports
                 },
                 handler: async (req, h) => {
                     // Pagination parameter with name "pg"
-                    let pg = parseInt(req.query.pg); // Es String !!!
-                    if ( req.query.pg == null){ // Puede no venir el param
-                        pg = 1;
-                    }
+                    let pg = parseInt(req.query.pg);
+                    let pgUltima = 1;
+
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { encargados: req.auth.credentials }
+
+                    // Obtener el numero de tareas existentes
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", criterio))
+                        .then((nTareas) => {
+                            if (nTareas == null)
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas asignadas&tipoMensaje=danger')
+
+                            pgUltima = nTareas/10;
+
+                            if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
+                                pg = 1;
+                            }
+                        });
 
                     // The search criteria in mongodb relies on the credentials travelling with the cookie
                     // When we crate an ad, we make the creator the user stored in the cookie
 
-                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { encargados: req.auth.credentials }
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
@@ -208,10 +235,10 @@ module.exports = { // Permite hacer futuros imports
                             }
                             misTareas = tareas;
 
-                            pgUltima = misTareas.total/2;
+                            pgUltima = misTareas.total/10;
                             // La página 2.5 no existe
                             // Si excede sumar 1 y quitar los decimales
-                            if (pgUltima % 2 > 0 ){
+                            if (pgUltima % 10 > 0 ){
                                 pgUltima = Math.trunc(pgUltima);
                                 pgUltima = pgUltima+1;
                             }
@@ -242,6 +269,7 @@ module.exports = { // Permite hacer futuros imports
                             tareasSeguidas: misTareasSeguidas,
                             paginas: paginas,
                             valor: pg,
+                            pgUltima:pgUltima,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );

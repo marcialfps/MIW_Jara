@@ -37,18 +37,21 @@
 
         <!-- Pagination -->
         <ul class="uk-pagination uk-flex-center" uk-margin>
-            {{#ifGreaterThanOne valor}}
+            {{#ifGreaterThan valor 1}}
                 <li>
                     <a href="/creadas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
                 </li>
-            {{/ifGreaterThanOne}}
+            {{/ifGreaterThan}}
             <li class="uk-active">
                 <a href="/creadas?pg={{ valor }}">{{ valor }}</a>
             </li>
-            <li>
-                <a href="/creadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
-            </li>
+            {{#ifEqualThan valor pgUltima}}
 
+            {{else}}
+                <li>
+                    <a href="/creadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+                </li>
+            {{/ifEqualThan}}
         </ul>
 
     </div>

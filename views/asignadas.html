@@ -124,18 +124,21 @@
 
         <!-- Pagination -->
         <ul class="uk-pagination uk-flex-center" uk-margin>
-            {{#ifGreaterThanOne valor}}
-                <li>
-                    <a href="/asignadas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
-                </li>
-            {{/ifGreaterThanOne}}
-            <li class="uk-active">
-                <a href="/asignadas?pg={{ valor }}">{{ valor }}</a>
-            </li>
+            {{#ifGreaterThan valor 1}}
             <li>
-                <a href="/asignadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+                <a href="/creadas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
             </li>
-
+            {{/ifGreaterThan}}
+            <li class="uk-active">
+                <a href="/creadas?pg={{ valor }}">{{ valor }}</a>
+            </li>
+            {{#ifEqualThan valor pgUltima}}
+                
+            {{else}}
+            <li>
+                <a href="/creadas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+            </li>
+            {{/ifEqualThan}}
         </ul>
 
     </div>

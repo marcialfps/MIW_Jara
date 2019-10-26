@@ -13,6 +13,22 @@ module.exports = {
         });
         return promise;
     },
+    obtenerNumeroDocumentos : async (db, coleccion, filtro) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection(coleccion);
+            collection.find(filtro).toArray ((err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    // numero de documentos
+                    resolve(result.length);
+                }
+                db.close();
+            });
+        });
+
+        return promise;
+    },
     obtenerTareas : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
