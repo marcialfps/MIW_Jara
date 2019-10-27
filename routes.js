@@ -304,6 +304,74 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
+                path: '/tarea/{id}/empezar',
+                options : {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    criterio = {
+                        _id: require("mongodb").ObjectID(req.params.id)
+                    }
+                    tarea = {
+                        estado: "enprogreso"
+                    }
+                    await repositorio.conexion()
+                        .then((db) => repositorio.modificarTarea(db,criterio,tarea))
+                        .then((id) => {
+                            respuesta = false;
+                            if (id == null) {
+                                respuesta =  false
+                            } else {
+                                respuesta = true;
+                            }
+                        })
+
+                    if (respuesta){
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=Estado actualizado&tipoMensaje=success&icon=check')
+                    }
+                    else {
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=No se pudo actualizar el estado&tipoMensaje=danger')
+                    }
+                }
+            },
+            {
+                method: 'GET',
+                path: '/tarea/{id}/finalizar',
+                options : {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    criterio = {
+                        _id: require("mongodb").ObjectID(req.params.id)
+                    }
+                    tarea = {
+                        estado: "finalizado"
+                    }
+                    await repositorio.conexion()
+                        .then((db) => repositorio.modificarTarea(db,criterio,tarea))
+                        .then((id) => {
+                            respuesta = false;
+                            if (id == null) {
+                                respuesta =  false
+                            } else {
+                                respuesta = true;
+                            }
+                        })
+
+                    if (respuesta){
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=Estado actualizado&tipoMensaje=success&icon=check')
+                    }
+                    else {
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=No se pudo actualizar el estado&tipoMensaje=danger')
+                    }
+                }
+            },
+            {
+                method: 'GET',
                 path: '/tarea/{id}/modificar',
                 options: {
                     auth: 'auth-registrado'
