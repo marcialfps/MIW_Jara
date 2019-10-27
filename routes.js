@@ -523,17 +523,6 @@ module.exports = { // Permite hacer futuros imports
                 }
             },
             {
-                // Controlador especial gracias a @hapi/inert. Redirige peticiones GET/... a
-                // los ficheros de public
-                method: 'GET',
-                path: '/{param*}',
-                handler: {
-                    directory: {
-                        path: './public'
-                    }
-                }
-            },
-            {
                 // Specify controller for specific URL path /anuncio/id
                 method: 'GET',
                 path: '/anuncio/{id}',
@@ -555,6 +544,18 @@ module.exports = { // Permite hacer futuros imports
                             usuarioAutenticado: user
                         },
                         { layout: 'base'});
+                }
+            },
+            {
+                // Controlador especial gracias a @hapi/inert. Redirige peticiones GET/... a
+                // los ficheros de public
+                method: 'GET',
+                path: '/{param*}',
+                handler: {
+                    directory: {
+                        path: './public',
+                        listing: false
+                    },
                 }
             }
         ])

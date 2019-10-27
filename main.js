@@ -41,6 +41,8 @@ const iniciarServer = async () => {
         await server.register(Vision);
         //  Register cookie component
         await server.register(Cookie);
+        // Register to show human friendly errors
+        await server.register(require('hapi-error'));
 
         //Configurar seguridad gracias al componente de Cookie.
         // Nombre personalizado de este sistema de autenticación

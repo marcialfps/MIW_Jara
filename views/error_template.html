@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!-- Example header -->
+<html lang="en">
+<head>
+    <title>Jara</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--  Include uikit & jquery  -->
+    <link rel="stylesheet" href="/css/uikit.css"/>
+    <link rel="stylesheet" href="/css/custom.css"/>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/uikit.js"></script>
+    <script src="/js/uikit-icons.js"></script>
+</head>
+<body>
+<!-- NOTIFICACION -->
+{{#if mensaje}}
+<script>
+    UIkit.notification({message: '{{ mensaje }}', status: 'success'})
+</script>
+{{/if}}
+<!-- Process get param 'mensaje' as a notification -->
+<script>
+    var mensaje = getUrlParameter('mensaje');
+    var tipoMensaje = getUrlParameter('tipoMensaje');
+    var iconoMensaje = getUrlParameter('icon');
+
+    if ( mensaje !== ""){
+        if (tipoMensaje === "" ){
+            tipoMensaje = 'primary';
+        }
+        if (iconoMensaje === "")
+            UIkit.notification({message: mensaje, status: tipoMensaje, pos: 'top-right'})
+        else
+            UIkit.notification({message: '<span uk-icon=\'icon: ' + iconoMensaje + '\'></span>   ' + mensaje, status: tipoMensaje, pos: 'top-right'})
+    }
+
+    // Function to get url parameters
+    function getUrlParameter(name) {
+        // Trim argument
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        // Test by regex if the url is in the URL
+        // If it is, return its value
+        return results === null ? '' :
+            decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+</script>
+
+<!--HEADER-->
+<header class="uk-box-shadow-small">
+    <div class="uk-container uk-container-expand">
+        <nav class="uk-navbar" data-uk-navbar>
+            <div class="uk-navbar-left">
+                <a href="/">
+                    <img width="120" src="/images/logo/header.png" alt="Jara logo">
+                </a>
+            </div>
+
+            <div class="uk-navbar-right">
+                <!-- uk-visible@m visible en pantallas m o más-->
+                <ul class="uk-navbar-nav uk-visible@m">
+                    <li>
+                        <a href="/seguidos">
+                                <span data-uk-icon="bookmark"
+                                      class="uk-margin-small-right">
+                                </span> Seguidas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/creadas">
+                                <span data-uk-icon="file-edit"
+                                      class="uk-margin-small-right">
+                                </span> Creadas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/asignadas">
+                                <span data-uk-icon="list"
+                                      class="uk-margin-small-right">
+                                </span> Asignadas
+                        </a>
+                    </li>
+                </ul>
+                <div class="uk-navbar-item">
+                    <a href="/crear"
+                       class="uk-button uk-button-primary uk-visible@m">
+                            <span data-uk-icon="plus-circle"
+                                  class="uk-margin-small-right">
+                            </span> Crear tarea
+                    </a>
+                </div>
+                <!--User authenticated, show his name  -->
+                {{#if usuarioAutenticado}}
+                <div class="uk-navbar-item">
+                    <a href="#"
+                       class="uk-button uk-button-default uk-visible@m">
+                                    <span data-uk-icon="cog"
+                                          class="uk-margin-small-right">
+                                    </span>{{usuarioAutenticado}}
+                    </a>
+                    <div uk-dropdown>
+                        <ul class="uk-nav uk-dropdown-nav">
+                            <li class="uk-nav-header">Ajustes</li>
+                            <li>
+                                <a href="/">
+                                    <span data-uk-icon="user" class="uk-margin-small-right"></span>
+                                    Perfil
+                                </a>
+                            </li>
+                            <li class="uk-nav-divider"></li>
+                            <li>
+                                <a href="/desconectarse">
+                                    <span data-uk-icon="sign-out" class="uk-margin-small-right"></span>
+                                    Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {{/if}}
+                <!--User not authenticated, show login  -->
+                {{^usuarioAutenticado}}
+                <div class="uk-navbar-item">
+                    <a href="/login"
+                       class="uk-button uk-button-default uk-visible@m">
+                                <span data-uk-icon="sign-in"
+                                      class="uk-margin-small-right">
+                                </span>Acceder
+                    </a>
+                </div>
+                {{/usuarioAutenticado}}
+
+                <!-- Menú de movil lo oculta en pantallas mayores de m-->
+                <div class="uk-navbar-item uk-hidden@m">
+                    <a class="uk-navbar-toggle"
+                       data-uk-toggle data-uk-navbar-toggle-icon
+                       href="#offcanvas-nav">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- Menú para movil - offCanvas -->
+<div id="offcanvas-nav" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar uk-offcanvas-bar-animation uk-offcanvas-slide">
+        <button
+                class="uk-offcanvas-close uk-close uk-icon"
+                type="button"
+                data-uk-close>
+        </button>
+        <ul class="uk-nav uk-nav-default">
+            <li class="uk-nav-header">Inicio</li>
+            <li>
+                <a href="/seguidas">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: bookmark">
+                        </span>Seguidas
+                </a>
+            </li>
+            <li>
+                <a href="/creadas">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: file-edit">
+                        </span>Creadas
+                </a>
+            </li>
+            <li>
+                <a href="/asignadas">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: list">
+                        </span>Asignadas
+                </a>
+            </li>
+            {{#if usuarioAutenticado}}
+            <li>
+                <a href="/">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: user">
+                        </span>Perfil
+                </a>
+            </li>
+            <li>
+                <a href="/desconectarse">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: close">
+                        </span>Cerrar sesión
+                </a>
+            </li>
+            {{/if}}
+            {{^usuarioAutenticado}}
+            <li>
+                <a href="/login">
+                        <span class="uk-margin-small-right uk-icon"
+                              data-uk-icon="icon: sign-in">
+                        </span>Acceder
+                </a>
+            </li>
+            {{/usuarioAutenticado}}
+        </ul>
+    </div>
+</div>
+
+<section class="uk-section custom-wrapper">
+    <div class="uk-container uk-text-center">
+        <div class="uk-overflow-auto">
+            <div class="uk-margin-large">
+                <h1 class="uk-margin uk-padding-small uk-padding-remove-left">
+                    Ups, parece que algo ha fallado... (error {{statusCode}})
+                </h1>
+            </div>
+            <div class="uk-margin">
+                <form action="/tareas">
+                    <div class="uk-inline uk-width-1-2">
+                        <span class="uk-form-icon" uk-icon="icon: search"></span>
+                        <input class="uk-input" type="text" name="criterio"
+                               placeholder="Buscar tareas...">
+                    </div>
+                    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid uk-flex-center">
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="todo" checked> Todo</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="asignado"> Asignado</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="enprogreso"> En progreso</label>
+                        <label><input class="uk-radio" type="radio" name="estado"
+                                      value="finalizado"> Finalizado</label>
+                    </div>
+                </form>
+            </div>
+            <div class="uk-margin-large">
+                <h4 class="uk-margin uk-padding-small uk-padding-remove-left">
+                    <a href="/">Volver al inicio</a>
+                </h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--FOOTER-->
+<footer class="uk-section-secondary">
+    <div class="uk-section uk-section-xsmall"
+         style="background-color: rgba(0,0,0,0.15)">
+        <div class="uk-container">
+            <div class="uk-grid uk-text-center uk-text-left@s"
+                 data-uk-grid>
+                <div class="uk-text-small uk-text-muted">
+                    Copyright 2019 - Todos los derechos. Eduardo Ulibarri Toledo y Marcial Francisco Parrilla Socas.
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
