@@ -61,6 +61,7 @@
                 <div class="uk-navbar-right">
                     <!-- uk-visible@m visible en pantallas m o más-->
                     <ul class="uk-navbar-nav uk-visible@m">
+                        {{#if usuarioAutenticado}}
                         <li>
                             <a href="/seguidas">
                                 <span data-uk-icon="bookmark"
@@ -68,6 +69,8 @@
                                 </span> Seguidas
                             </a>
                         </li>
+                        {{/if}}
+                        {{#if usuarioAutenticado}}
                         <li>
                             <a href="/creadas">
                                 <span data-uk-icon="file-edit"
@@ -75,6 +78,8 @@
                                 </span> Creadas
                             </a>
                         </li>
+                        {{/if}}
+                        {{#if usuarioAutenticado}}
                         <li>
                             <a href="/asignadas">
                                 <span data-uk-icon="list"
@@ -82,14 +87,17 @@
                                 </span> Asignadas
                             </a>
                         </li>
+                        {{/if}}
                     </ul>
                     <div class="uk-navbar-item">
+                        {{#if usuarioAutenticado}}
                         <a href="/crear"
                            class="uk-button uk-button-primary uk-visible@m">
                             <span data-uk-icon="plus-circle"
                                   class="uk-margin-small-right">
                             </span> Crear tarea
                         </a>
+                        {{/if}}
                     </div>
                     <!--User authenticated, show his name  -->
                     {{#if usuarioAutenticado}}
@@ -153,6 +161,7 @@
             </button>
             <ul class="uk-nav uk-nav-default">
                 <li class="uk-nav-header">Inicio</li>
+                {{#if usuarioAutenticado}}
                 <li>
                     <a href="/seguidas">
                         <span class="uk-margin-small-right uk-icon"
@@ -160,6 +169,8 @@
                         </span>Seguidas
                     </a>
                 </li>
+                {{/if}}
+                {{#if usuarioAutenticado}}
                 <li>
                     <a href="/creadas">
                         <span class="uk-margin-small-right uk-icon"
@@ -167,6 +178,8 @@
                         </span>Creadas
                     </a>
                 </li>
+                {{/if}}
+                {{#if usuarioAutenticado}}
                 <li>
                     <a href="/asignadas">
                         <span class="uk-margin-small-right uk-icon"
@@ -174,6 +187,8 @@
                         </span>Asignadas
                     </a>
                 </li>
+                {{/if}}
+                {{#if usuarioAutenticado}}
                 <li>
                     <a href="/crear">
                         <span class="uk-margin-small-right uk-icon"
@@ -181,6 +196,7 @@
                         </span>Crear tarea
                     </a>
                 </li>
+                {{/if}}
                 {{#if usuarioAutenticado}}
                 <li>
                     <a href="/perfil">
