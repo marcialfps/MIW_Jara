@@ -21,6 +21,6 @@
     "vision": "^5.4.4"
   },
   "scripts": {
-    "start": "main.js"
+    "start": "node main.js"
   }
 }
