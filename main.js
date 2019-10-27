@@ -10,8 +10,7 @@ const repositorio = require("./repositorio.js");
 
 // Servidor
 const server = Hapi.server({
-
-    host: 'localhost',
+    port: process.env.PORT || 5000
 });
 
 // declarar metodos comunes
