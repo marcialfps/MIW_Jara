@@ -119,7 +119,7 @@ const iniciarServer = async () => {
         });
 
         await server.start();
-        console.log('Servidor'+server.info+'.');
+        console.log('Servidor'+server.port+'.');
     } catch (error) {
         console.log('Error '+error);
     }
