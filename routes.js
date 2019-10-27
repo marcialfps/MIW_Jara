@@ -654,6 +654,32 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
+                path: '/perfil',
+                options : {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    let criterio = { "nombre": req.auth.credentials}
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerOperarios(db, criterio))
+                        .then((operarios) => {
+                            if (operarios == null || operarios.length === 0)
+                                ret = false
+                            else
+                                operario = operarios[0];
+                        })
+                    return h.view('perfil',
+                        {
+                            operario: operario
+                        },
+                        {
+                            layout: 'base'
+                        });
+                }
+            },
+            {
+                method: 'GET',
                 path: '/tarea/{id}',
                 handler: async (req, h) => {
                     let criterio = { "_id": require("mongodb").ObjectID(req.params.id)}
