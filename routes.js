@@ -692,10 +692,15 @@ module.exports = { // Permite hacer futuros imports
                             else
                                 tarea = tareas[0];
                         })
+                    let parametrosVista = {
+                        tarea: tarea
+                    };
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== "")
+                        parametrosVista.usuarioAutenticado = req.state["session-id"].usuario;
+
+
                     return h.view('tarea',
-                        {
-                            tarea: tarea
-                        },
+                        parametrosVista,
                         {
                             layout: 'base'
                         });
