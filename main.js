@@ -119,7 +119,7 @@ const iniciarServer = async () => {
         });
 
         await server.start();
-        console.log('Servidor localhost:8080');
+        console.log('Servidor'+server.info+'.');
     } catch (error) {
         console.log('Error '+error);
     }
