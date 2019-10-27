@@ -26,19 +26,21 @@
                     {{/isAsignada}}
 
                     {{#isInProgress tarea.estado}}
-                    <div style="background: #faa05a;" class="uk-button uk-button-primary" style="position: static; cursor: default;">En progreso</div>
+                    <div style="background: #faa05a;position: static; cursor: default;" class="uk-button uk-button-primary">En progreso</div>
                     {{/isInProgress}}
 
                     {{#isFinished tarea.estado}}
-                    <div style="background: #32d296;" class="uk-button uk-button-primary" style="position: static; cursor: default;">Finalizada</div>
+                    <div style="background: #32d296;position: static; cursor: default;" class="uk-button uk-button-primary">Finalizada</div>
                     {{/isFinished}}
                     <!-- Boton marcar empezada o finalizada -->
                     {{#isAsignada tarea.estado}}
-                    <div class="uk-button uk-button-default">Marcar empezada</div>
+                    <a href="/tarea/{{ tarea._id}}/empezar"
+                         class="uk-button uk-button-default">Marcar empezada</a>
                     {{/isAsignada}}
 
                     {{#isInProgress tarea.estado}}
-                    <div class="uk-button uk-button-text">Marcar finalizada</div>
+                    <a href="/tarea/{{tarea._id}}/finalizar"
+                       class="uk-button uk-button-default">Marcar finalizada</a>
                     {{/isInProgress}}
 
                 </h3>
@@ -50,7 +52,6 @@
             </div>
             <div class="uk-card-footer">
                 <p>Creada el {{tarea.creacion}} por {{tarea.creador}}.</p>
-                <a href="#" class="uk-button uk-button-text">Finalizar</a>
             </div>
         </div>
     </div>

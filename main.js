@@ -10,7 +10,11 @@ const repositorio = require("./repositorio.js");
 
 // Servidor
 const server = Hapi.server({
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000 //Heroku
+    /*
+    port: 8080,
+    host: 'localhost'
+     */
 });
 
 // declarar metodos comunes
