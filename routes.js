@@ -181,6 +181,41 @@ module.exports = { // Permite hacer futuros imports
                 }
             },
             {
+                method: 'POST',
+                path: '/tarea/{id}/comentar',
+                options : {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    var today = new Date()
+                    comentario = {
+                        autor: req.auth.credentials,
+                        tarea: require("mongodb").ObjectID(req.params.id),
+                        texto: req.payload.texto,
+                        fecha: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear()
+                    }
+                    await repositorio.conexion()
+                        .then((db) => repositorio.insertarComentario(db,comentario))
+                        .then((id) => {
+                            respuesta = false;
+                            if (id == null) {
+                                respuesta =  false
+                            } else {
+                                respuesta = true;
+                            }
+                        })
+
+                    if (respuesta){
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=Comentario añadido&tipoMensaje=success')
+                    }
+                    else {
+                        return h.redirect('/tarea/'+req.params.id+
+                            '?mensaje=No se pudo modificar la tarea&tipoMensaje=danger')
+                    }
+                }
+            },
+            {
                 method: 'GET',
                 path: '/tarea/{id}/modificar',
                 options: {
@@ -682,6 +717,14 @@ module.exports = { // Permite hacer futuros imports
                 method: 'GET',
                 path: '/tarea/{id}',
                 handler: async (req, h) => {
+                    let criterioComentario = {"tarea": require("mongodb").ObjectID(req.params.id)}
+                    let comentariosTarea = []
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerComentarios(db, criterioComentario))
+                        .then((comentarios) => {
+                            comentariosTarea = comentarios;
+                        })
+
                     let criterio = { "_id": require("mongodb").ObjectID(req.params.id)}
                     let ret = false;
                     await repositorio.conexion()
@@ -693,7 +736,8 @@ module.exports = { // Permite hacer futuros imports
                                 tarea = tareas[0];
                         })
                     let parametrosVista = {
-                        tarea: tarea
+                        tarea: tarea,
+                        comentarios: comentariosTarea,
                     };
                     if (req.state["session-id"] && req.state["session-id"].usuario !== ""){
                         username = req.state["session-id"].usuario;

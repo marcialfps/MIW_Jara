@@ -13,6 +13,36 @@ module.exports = {
         });
         return promise;
     },
+    insertarComentario : async (db, comentario) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection('comentarios');
+            collection.insertOne(comentario, (err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    resolve(result.ops[0]._id.toString());
+                }
+                db.close();
+            });
+        });
+        return promise;
+    },
+    obtenerComentarios : async (db, criterio) => {
+        promise = new Promise((resolve, reject) => {
+            var collection = db.collection('comentarios');
+            collection.find(criterio).toArray( (err, result) => {
+                if (err) {
+                    resolve(null);
+                } else {
+                    // lista de tareas
+                    resolve(result);
+                }
+                db.close();
+            });
+        });
+
+        return promise;
+    },
     obtenerNumeroDocumentos : async (db, coleccion, filtro) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection(coleccion);
