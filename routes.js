@@ -30,6 +30,93 @@ module.exports = { // Permite hacer futuros imports
         // When registering the routes. create a pointer to the DB
         repositorio = server.methods.getRepositorio();
         server.route([
+            {   // Como el mapeo de favorita, pero devolviendo una vista en vez del resultado
+                method: 'GET',
+                path: '/favorita-update/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder marcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0)
+                                ret = false;
+                            else
+                                tarea = tareas[0];
+                        });
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.asignados.includes(req.auth.credentials) || tarea.creador === req.auth.credentials){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0)
+                                    ret = false
+                                else
+                                    ret = true  // Tarea marcada favorita
+                            })
+                    }
+                    if (ret === true){
+                        return h.redirect('/tarea/' + tarea._id + '?pg=' + req.params.idTarea +
+                            '&mensaje=Incidencia puesta a seguimiento&tipoMensaje=primary&icon=plus')
+                    }
+                    else {
+                        return h.redirect('/tarea/' + tarea._id + '?pg=' + req.params.idTarea +
+                            '&mensaje=Ha habido un error procesando su petición&tipoMensaje=danger&icon=info')
+                    }
+                }
+            },
+            {
+                method: 'GET',
+                path: '/no-favorita-update/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder desmarcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0)
+                                ret = false;
+                            else
+                                tarea = tareas[0];
+                        })
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.asignados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0)
+                                    ret = false;
+                                else
+                                    ret = true // Tarea marcada favorita
+                            })
+                    }
+                    if (ret === true){
+                        return h.redirect('/tarea/' + tarea._id + '?pg=' + req.params.idTarea +
+                            '&mensaje=Incidencia eliminada de seguimiento&tipoMensaje=primary&icon=close')
+                    }
+                    else {
+                        return h.redirect('/tarea/' + tarea._id + '?pg=' + req.params.idTarea +
+                            '&mensaje=Ha habido un error procesando su petición&tipoMensaje=danger&icon=info')
+                    }
+                }
+            },
             {
                 method: 'GET',
                 path: '/favorita/{idTarea}',
@@ -673,9 +760,13 @@ module.exports = { // Permite hacer futuros imports
                             tareasEncontradas = tareas;
                         });
 
+                    let user = null;
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== "")
+                        user = req.state["session-id"].usuario;
+
                     return h.view('tareas',
                         {
-                            usuarioAutenticado: req.auth.credentials,
+                            usuarioAutenticado: user,
                             tareas: tareasEncontradas,
                             nTareas: tareasEncontradas.length,
                             busqueda: req.query.criterio.trim(),
@@ -717,28 +808,29 @@ module.exports = { // Permite hacer futuros imports
                 method: 'GET',
                 path: '/tarea/{id}',
                 handler: async (req, h) => {
+                    // Obtener comentarios
                     let criterioComentario = {"tarea": require("mongodb").ObjectID(req.params.id)}
                     let comentariosTarea = []
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerComentarios(db, criterioComentario))
                         .then((comentarios) => {
                             comentariosTarea = comentarios;
-                        })
+                        });
 
-                    let criterio = { "_id": require("mongodb").ObjectID(req.params.id)}
+                    // Obtener tarea
+                    let criterioTarea = { "_id": require("mongodb").ObjectID(req.params.id)}
                     let ret = false;
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((db) => repositorio.obtenerTareas(db, criterioTarea))
                         .then((tareas) => {
                             if (tareas == null || tareas.length === 0)
                                 ret = false
                             else
                                 tarea = tareas[0];
-                        })
-                    let parametrosVista = {
-                        tarea: tarea,
-                        comentarios: comentariosTarea,
-                    };
+                        });
+
+                    let parametrosVista = {};
+                    let username = null;
                     if (req.state["session-id"] && req.state["session-id"].usuario !== ""){
                         username = req.state["session-id"].usuario;
                         parametrosVista.usuarioAutenticado = username;
@@ -746,6 +838,26 @@ module.exports = { // Permite hacer futuros imports
                             parametrosVista.esCreador = true;
                         if (tarea.asignados.includes(username))
                             parametrosVista.esAsignado = true;
+                    }
+                    parametrosVista.tarea = tarea;
+                    parametrosVista.comentarios = comentariosTarea;
+
+                    let operario = null;
+                    if (username != null){
+                        let criterioOperario = { nombre: username}
+                        let ret = false;
+                        await repositorio.conexion()
+                            .then((db) => repositorio.obtenerOperarios(db, criterioOperario))
+                            .then((operarios) => {
+                                if (operarios == null || operarios.length === 0)
+                                    ret = false;
+                                else
+                                    operario = operarios[0];
+                            });
+                    }
+
+                    if (operario != null && operario.seguidas.includes(tarea._id.toString())){
+                        parametrosVista.seguida = true;
                     }
 
                     return h.view('tarea',

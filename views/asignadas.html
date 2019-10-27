@@ -95,7 +95,6 @@
                                     urlUpdate += "?pg="+numberPage;
 
                                     $("#container-{{id}}").load(urlUpdate + " #seguir-{{id}}");
-                                    console.log(data)
                                     // Si ha habido un fallo al contactar con la BD y el controlador devolvió false, avisar:
                                     if (data === false){
                                         // Notificar

@@ -4,19 +4,61 @@
             <div class="uk-card-header">
                 <div class="uk-position-top-right card-top">
                     <div class="card-top-links">
-                        {{#if usuarioAutenticado}}
+                        {{#if esCreador}}
                         <a title="Modificar tarea" class="uk-link " href="/tarea/{{tarea._id}}/modificar">
                             <span  uk-icon="pencil"></span>
                         </a>
                         {{/if}}
 
                     </div>
-                    {{#if usuarioAutenticado}}
+                    {{#if esAsignado}}
                         <div id="container-{{tarea._id}}" style="margin: auto; width: fit-content">
-                            <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary uk-border-rounded" type="button">
-                            </button>
+                        {{#if seguida}}
+                            <a href="/no-favorita-update/{{tarea._id}}">
+                                <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary uk-border-rounded" type="button">
+                                </button>
+                            </a>
+                        {{else}}
+                            <a href="/favorita-update/{{tarea._id}}">
+                                <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-default uk-border-rounded" type="button">
+                                </button>
+                            </a>
+                        {{/if}}
                         </div>
+                    {{else}}
+                        {{#if esCreador}}
+                        <div id="container-{{tarea._id}}" style="margin: auto; width: fit-content">
+                            {{#if seguida}}
+                            <a href="/no-favorita-update/{{tarea._id}}">
+                                <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary uk-border-rounded" type="button">
+                                </button>
+                            </a>
+                            {{else}}
+                            <a href="/favorita-update/{{tarea._id}}">
+                                <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-default uk-border-rounded" type="button">
+                                </button>
+                            </a>
+                            {{/if}}
+                        </div>
+                        {{/if}}
                     {{/if}}
+                    <script>
+                        $("#seguir-{{tarea._id}}").click(function(event) {
+
+                            if ($("#seguir-{{tarea._id}}").hasClass("clicked-once")){
+                                event.stopPropagation();
+                                event.preventDefault();
+                                return false;
+                            }
+
+                            // Evitar que haga nada si ya lo clickaron
+                            $("#seguir-{{tarea._id}}").addClass("clicked-once");
+
+                            // Spinner en el boton y quitar el marcador
+                            ($("#seguir-{{tarea._id}}").removeAttr("data-uk-icon"));
+                            ($("#seguir-{{tarea._id}}").attr("uk-spinner", "ratio: 0.7"));
+                        });
+                    </script>
                 </div>
                 <h3 class="uk-card-title">
                     <span class="uk-margin-right">{{tarea.titulo}}</span>
@@ -30,7 +72,7 @@
                     {{/isInProgress}}
 
                     {{#isFinished tarea.estado}}
-                    <div style="background: #32d296;" class="uk-button uk-button-primary" style="position: static; cursor: default;">Finalizada</div>
+                    <div style="background: #32d296; cursor: default" class="uk-button uk-button-primary" style="position: static; cursor: default;">Finalizada</div>
                     {{/isFinished}}
                     <!-- Boton marcar empezada o finalizada -->
                     {{#isAsignada tarea.estado}}
