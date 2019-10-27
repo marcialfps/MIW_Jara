@@ -592,20 +592,12 @@ module.exports = { // Permite hacer futuros imports
                             criterio.titulo = userInput;
                     }
 
+                    var tareasEncontradas = [];
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareas(db, criterio))
                         .then((tareas) => {
                             tareasEncontradas = tareas;
                         })
-                    // Recorte de longitud de titulos y descripciones
-                    tareasEncontradas.forEach( (e) => {
-                        if (e.titulo.length > 25){
-                            e.titulo = e.titulo.substring(0, 25) + "...";
-                        }
-                        if (e.descripcion.length > 80) {
-                            e.descripcion = e.descripcion.substring(0, 80) + "...";
-                        }
-                    });
 
                     return h.view(
                         'tareas', // html principal

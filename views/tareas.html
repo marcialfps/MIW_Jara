@@ -22,31 +22,35 @@
             </form>
         </div>
         {{else}}
-        <!-- sin incluir uk-grid no va el grid -->
-        <div class="uk-child-width-1-2@m" uk-grid >
-            {{#each tareas}}
-            <div >
-                <div style="height:400px;"
-                     class="uk-card uk-card-default uk-grid uk-grid-collapse uk-child-width-1-2 uk-margin">
-                    <div class="uk-card-media-left uk-cover-container">
-                        <img style="height:400px;"
-                             class="uk-cover" src="/uploads/{{ _id }}.png">
-                    </div>
-                    <div>
-                        <div class="uk-card-body">
-                            <h3 class="uk-card-title">{{ titulo }}</h3>
-                            <p>{{ descripcion }}.</p>
-                            <a class="uk-width-1-1 uk-button uk-button-secondary uk-button-small"
-                               href="/comprar/{{ _id }}">
-                                {{ precio }} €
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <thead>
+        <tr>
+            <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
+            <th class="uk-table-expand uk-visible@m">Descripción</th>
+            <th class="uk-width-small">Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each tareas}}
+        <tr>
+            <td>{{ titulo }}</td>
+            <td>{{ descripcion }}</td>
+            <td>
+                {{#isAsignada estado}}
+                <p class="uk-text-uppercase uk-text-primary">Asignada</p>
+                {{/isAsignada}}
 
-            {{/each}}
-        </div>
+                {{#isInProgress estado}}
+                <p class="uk-text-uppercase uk-text-warning">En progreso</p>
+                {{/isInProgress}}
+
+                {{#isFinished estado}}
+                <p class="uk-text-uppercase uk-text-success">Finalizada</p>
+                {{/isFinished}}
+            </td>
+        </tr>
+        {{/each}}
+        </tbody>
+        </table>
         {{/ifEqualThan}}
     </div>
 </section>
