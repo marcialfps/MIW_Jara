@@ -126,31 +126,27 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'POST',
-                path: '/anuncio/{id}/modificar',
+                path: '/tarea/{id}/modificar',
                 options : {
-                    auth: 'auth-registrado',
-                    payload: {
-                        output: 'stream'
-                    }
+                    auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
                     // criterio de anucio a modificar: que tenga elID que buscamos y que sea del usuario logueado!
                     var criterio = {
                         "_id" : require("mongodb").ObjectID(req.params.id),
-                        "usuario": req.auth.credentials
+                        "creador": req.auth.credentials
                     };
                     // nuevos valores para los atributos
-                    anuncio = {
-                        usuario: req.auth.credentials ,
+                    tarea = {
                         titulo: req.payload.titulo,
                         descripcion: req.payload.descripcion,
-                        categoria: req.payload.categoria,
-                        precio: Number.parseFloat(req.payload.precio),
+                        limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
+                        asignados: req.payload.operariosasignados
                     }
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
                     await repositorio.conexion()
-                        .then((db) => repositorio.modificarAnuncio(db,criterio,anuncio))
+                        .then((db) => repositorio.modificarTarea(db,criterio,tarea))
                         .then((id) => {
                             respuesta = false;
                             if (id == null) {
@@ -160,44 +156,46 @@ module.exports = { // Permite hacer futuros imports
                             }
                         })
 
-                    // ¿nos han enviado foto nueva? Sobreescribir la vieja
-                    if ( req.payload.foto.filename != "") {
-                        binario = req.payload.foto._data;
-                        extension = req.payload.foto.hapi.filename.split('.')[1];
-                        await module.exports.utilSubirFichero(
-                            binario, req.params.id, extension);
-                    }
-
                     if (respuesta){
-                        return h.redirect('/misanuncios?mensaje=Anuncio modificado&tipoMensaje=success')
+                        return h.redirect('/creadas?mensaje=Tarea modificada&tipoMensaje=success')
                     }
                     else {
-                        return h.redirect('/publicar?mensaje=No se pudo modificar el anuncio&tipoMensaje=danger')
+                        return h.redirect('/creadas?mensaje=No se pudo modificar la tarea&tipoMensaje=danger')
                     }
                 }
             },
             {
                 method: 'GET',
-                path: '/anuncio/{id}/modificar',
+                path: '/tarea/{id}/modificar',
                 options: {
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
+                    var operariosRecibidos = []
+
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerOperarios(db, {}))
+                        .then((operarios) => {
+                            operariosRecibidos = operarios;
+                        })
+
                     // Transform the add ID string to a mongo ObjectID
                     var criterio = {
                         "_id" : require("mongodb").ObjectID(req.params.id),
-                        "usuario": req.auth.credentials
+                        "creador": req.auth.credentials
                     };
+                    var tarea;
                     // Get the ad with the desired ID
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerAnuncios(db, criterio))
-                        .then((anuncios) => {
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
                             // ¿Solo una coincidencia por _id?
-                            anuncio = anuncios[0];
+                            tarea = tareas[0];
                         })
                     return h.view('modificar',
                         {
-                            anuncio: anuncio,
+                            tarea: tarea,
+                            operarios: operariosRecibidos,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );

@@ -152,10 +152,10 @@ module.exports = {
         });
         return promise;
     },
-    modificarAnuncio : async (db, criterio, anuncio) => {
+    modificarTarea : async (db, criterio, tarea) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
-            collection.update(criterio, {$set: anuncio}, (err, result) => {
+            var collection = db.collection('tareas');
+            collection.update(criterio, {$set: tarea}, (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
