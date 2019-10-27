@@ -1,3 +1,19 @@
 .custom-wrapper {
     min-height: 88vh;
 }
+
+.card-top {
+    display: flex;
+    flex-direction: row;
+    top: 30px;
+    right: 30px;
+}
+
+.card-top-links {
+    display: flex;
+    width: fit-content;
+}
+
+.card-top-links > a {
+    margin: auto 12px;
+}

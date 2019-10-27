@@ -2,19 +2,48 @@
     <div class="uk-position-center">
         <div class="uk-card uk-card-default">
             <div class="uk-card-header">
-                {{#isAsignada tarea.estado}}
-                <div class="uk-card-badge uk-label uk-button-primary">Asignada</div>
-                {{/isAsignada}}
+                <div class="uk-position-top-right card-top">
+                    <div class="card-top-links">
+                        {{#if usuarioAutenticado}}
+                        <a title="Modificar tarea" class="uk-link " href="/tarea/{{tarea._id}}/modificar">
+                            <span  uk-icon="pencil"></span>
+                        </a>
+                        {{/if}}
 
-                {{#isInProgress tarea.estado}}
-                <div style="background: #faa05a;" class="uk-card-badge uk-label uk-button-warning">En progreso</div>
-                {{/isInProgress}}
+                    </div>
+                    {{#if usuarioAutenticado}}
+                        <div id="container-{{tarea._id}}" style="margin: auto; width: fit-content">
+                            <button style="padding: 0 8px;"  id="seguir-{{tarea._id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary uk-border-rounded" type="button">
+                            </button>
+                        </div>
+                    {{/if}}
+                </div>
+                <h3 class="uk-card-title">
+                    <span class="uk-margin-right">{{tarea.titulo}}</span>
+                    <!-- Insignia estado tarea -->
+                    {{#isAsignada tarea.estado}}
+                    <div class="uk-button uk-button-primary" style="position: static; cursor: default">Asignada</div>
+                    {{/isAsignada}}
 
-                {{#isFinished tarea.estado}}
-                <div style="background: #32d296;" class="uk-card-badge uk-label uk-button-secondary">Finalizada</div>
-                {{/isFinished}}
-                <h3 class="uk-card-title">{{tarea.titulo}}</h3>
-                <p class="uk-text-meta uk-margin-remove-top">{{tarea.limite}}</p>
+                    {{#isInProgress tarea.estado}}
+                    <div style="background: #faa05a;" class="uk-button uk-button-primary" style="position: static; cursor: default;">En progreso</div>
+                    {{/isInProgress}}
+
+                    {{#isFinished tarea.estado}}
+                    <div style="background: #32d296;" class="uk-button uk-button-primary" style="position: static; cursor: default;">Finalizada</div>
+                    {{/isFinished}}
+                    <!-- Boton marcar empezada o finalizada -->
+                    {{#isAsignada tarea.estado}}
+                    <div class="uk-button uk-button-default">Marcar empezada</div>
+                    {{/isAsignada}}
+
+                    {{#isInProgress tarea.estado}}
+                    <div class="uk-button uk-button-text">Marcar finalizada</div>
+                    {{/isInProgress}}
+
+                </h3>
+
+                <p class="uk-text-meta uk-margin-remove-top">Fecha límite: {{tarea.limite}} • Creada el {{tarea.creacion}} por {{tarea.creador}}</p>
             </div>
             <div class="uk-card-body">
                 <p>{{tarea.descripcion}}</p>

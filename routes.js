@@ -695,9 +695,14 @@ module.exports = { // Permite hacer futuros imports
                     let parametrosVista = {
                         tarea: tarea
                     };
-                    if (req.state["session-id"] && req.state["session-id"].usuario !== "")
-                        parametrosVista.usuarioAutenticado = req.state["session-id"].usuario;
-
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== ""){
+                        username = req.state["session-id"].usuario;
+                        parametrosVista.usuarioAutenticado = username;
+                        if (username === tarea.creador)
+                            parametrosVista.esCreador = true;
+                        if (tarea.asignados.includes(username))
+                            parametrosVista.esAsignado = true;
+                    }
 
                     return h.view('tarea',
                         parametrosVista,
