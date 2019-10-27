@@ -589,22 +589,44 @@ module.exports = { // Permite hacer futuros imports
                             criterio.estado = req.query.estado;
 
                         if (userInput !== "")
-                            criterio.titulo = userInput;
+                            criterio.titulo = {$regex : ".*"+userInput+".*"};
                     }
 
-                    var tareasEncontradas = [];
+                    let tareasEncontradas = [];
+
+                    // Pagination parameter with name "pg"
+                    let pg = parseInt(req.query.pg);
+                    let pgUltima = 1;
+
+
+                    // Obtener el numero de tareas existentes
                     await repositorio.conexion()
-                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", criterio))
+                        .then((nTareas) => {
+                            if (nTareas == null)
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+
+                            pgUltima = nTareas/11;
+
+                            if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
+                                pg = 1;
+                            }
+                        });
+
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
                             tareasEncontradas = tareas;
-                        })
-                    return h.view(
-                        'tareas', // html principal
-                        { // data for the template
+                        });
+
+                    return h.view('tareas',
+                        {
                             usuarioAutenticado: req.auth.credentials,
                             tareas: tareasEncontradas,
                             nTareas: tareasEncontradas.length,
-                            busqueda: req.query.criterio.trim()
+                            busqueda: req.query.criterio.trim(),
+                            valor: pg,
+                            pgUltima: Math.trunc(pgUltima)+1
                         },
                         { // which layout
                             layout: 'base'

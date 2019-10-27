@@ -49,7 +49,7 @@ module.exports = {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
             collection.count( criterio, (err, count) => {
-                collection.find(criterio).skip( (pg-1)*2 ).limit( 2 )
+                collection.find(criterio).skip( (pg-1)*10 ).limit( 10 )
                     .toArray( (err, result) => {
                         if (err) {
                             resolve(null);

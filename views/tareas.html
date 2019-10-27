@@ -22,35 +22,55 @@
             </form>
         </div>
         {{else}}
-        <thead>
-        <tr>
-            <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
-            <th class="uk-table-expand uk-visible@m">Descripción</th>
-            <th class="uk-width-small">Estado</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#each tareas}}
-        <tr>
-            <td>{{ titulo }}</td>
-            <td>{{ descripcion }}</td>
-            <td>
-                {{#isAsignada estado}}
-                <p class="uk-text-uppercase uk-text-primary">Asignada</p>
-                {{/isAsignada}}
+        <table class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+            <thead>
+            <tr>
+                <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
+                <th class="uk-table-expand uk-visible@m">Descripción</th>
+                <th class="uk-width-small">Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each tareas}}
+            <tr>
+                <td>{{ titulo }}</td>
+                <td>{{ descripcion }}</td>
+                <td>
+                    {{#isAsignada estado}}
+                    <p class="uk-text-uppercase uk-text-primary">Asignada</p>
+                    {{/isAsignada}}
 
-                {{#isInProgress estado}}
-                <p class="uk-text-uppercase uk-text-warning">En progreso</p>
-                {{/isInProgress}}
+                    {{#isInProgress estado}}
+                    <p class="uk-text-uppercase uk-text-warning">En progreso</p>
+                    {{/isInProgress}}
 
-                {{#isFinished estado}}
-                <p class="uk-text-uppercase uk-text-success">Finalizada</p>
-                {{/isFinished}}
-            </td>
-        </tr>
-        {{/each}}
-        </tbody>
+                    {{#isFinished estado}}
+                    <p class="uk-text-uppercase uk-text-success">Finalizada</p>
+                    {{/isFinished}}
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
         </table>
+
+        <!-- Pagination -->
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            {{#ifGreaterThan valor 1}}
+            <li>
+                <a href="/tareas?pg={{ restar valor 1 }}">{{ restar valor 1 }}</a>
+            </li>
+            {{/ifGreaterThan}}
+            <li class="uk-active">
+                <a href="/tareas?pg={{ valor }}">{{ valor }}</a>
+            </li>
+            {{#ifEqualThan valor pgUltima}}
+
+            {{else}}
+            <li>
+                <a href="/tareas?pg={{ sumar valor 1 }}">{{ sumar valor 1 }}</a>
+            </li>
+            {{/ifEqualThan}}
+        </ul>
         {{/ifEqualThan}}
     </div>
 </section>
