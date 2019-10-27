@@ -33,7 +33,7 @@
             <tbody>
             {{#each tareas}}
             <tr>
-                <td>{{ titulo }}</td>
+                <td><a href="/tarea/{{_id}}">{{ titulo }}</a></td>
                 <td>{{ descripcion }}</td>
                 <td>
                     {{#isAsignada estado}}
