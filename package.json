@@ -19,5 +19,8 @@
     "hapi-error": "^2.1.0",
     "mongodb": "^2.2.33",
     "vision": "^5.4.4"
+  },
+  "scripts": {
+    "start": "main.js"
   }
 }
