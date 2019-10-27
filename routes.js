@@ -632,11 +632,13 @@ module.exports = { // Permite hacer futuros imports
                 }
             },
             {
-                // Specify controller for specific URL path /anuncio/id
                 method: 'GET',
-                path: '/anuncio/{id}',
+                path: '/tarea/{id}',
                 handler: async (req, h) => {
-                    return 'Anuncio id: ' + req.params.id;
+                    return h.view('tarea',{},
+                        {
+                            layout: 'base'
+                        });
                 }
             },
             {
