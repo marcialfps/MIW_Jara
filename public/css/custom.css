@@ -2,6 +2,10 @@
     min-height: 88vh;
 }
 
+.tarea-card {
+    padding-bottom: 25px;
+}
+
 .card-top {
     display: flex;
     flex-direction: row;
@@ -17,3 +21,5 @@
 .card-top-links > a {
     margin: auto 12px;
 }
+
+
