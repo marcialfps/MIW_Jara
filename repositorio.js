@@ -168,9 +168,9 @@ module.exports = {
 
         return promise;
     },
-    eliminarAnuncios : async (db, criterio) => {
+    eliminarTareas : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
-            var collection = db.collection('anuncios');
+            var collection = db.collection('tareas');
             collection.remove(criterio, (err, result) => {
                 if (err) {
                     resolve(null);

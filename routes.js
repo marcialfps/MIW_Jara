@@ -14,6 +14,16 @@ module.exports = { // Permite hacer futuros imports
             })
         })
     },
+    getUrlParameter: (name, location) => {
+    // Trim argument
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location);
+    // Test by regex if the url is in the URL
+    // If it is, return its value
+    return results === null ? null :
+        decodeURIComponent(results[1].replace(/\+/g, ' '));
+    },
 
     // Register function is run the moment hapi inserts the module
     register: async (server, options) => {
@@ -96,31 +106,36 @@ module.exports = { // Permite hacer futuros imports
             },
             {
                 method: 'GET',
-                path: '/anuncio/{id}/eliminar',
+                path: '/eliminar/{id}',
                 options: {
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
+
+                    let pg = parseInt(module.exports.getUrlParameter("pg", req.info.referrer));
+                    if (pg == null)
+                        pg = 1;
+
                     // El anuncio a eliminar debe tener el ID indicado y ser del usuario que está en sesión
                     var criterio = {
                         "_id" : require("mongodb").ObjectID(req.params.id),
-                        "usuario": req.auth.credentials
+                        "creador": req.auth.credentials
                     };
+                    let respuesta = false;
                     await repositorio.conexion()
-                        .then((db) => repositorio.eliminarAnuncios(db, criterio))
+                        .then((db) => repositorio.eliminarTareas(db, criterio))
                         .then((resultado) => {
-                            respuesta = false
                             // Check that we deleted something
-                            if (resultado.result.n == 0) {
+                            if (resultado.result.n === 0) {
                                 respuesta =  false
                             } else {
                                 respuesta = true;
                             }
                         })
                     if (respuesta) {
-                        return h.redirect('/misanuncios?mensaje=Anuncio eliminado&tipoMensaje=success')
+                        return h.redirect('/creadas?pg=' + pg + '&mensaje=Tarea eliminada&tipoMensaje=success&icon=check')
                     } else {
-                        return h.redirect('/misanuncios?mensaje=Anuncio no eliminado&tipoMensaje=danger')
+                        return h.redirect('/creadas?pg=' + pg + '&mensaje=Tarea no eliminada&tipoMensaje=danger&icon=close')
                     }
                 }
             },
@@ -261,7 +276,7 @@ module.exports = { // Permite hacer futuros imports
                     let pgUltima = 1;
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { encargados: req.auth.credentials }
+                    let criterio = { "asignados": req.auth.credentials  };
 
                     // Obtener el numero de tareas existentes
                     await repositorio.conexion()
@@ -519,8 +534,11 @@ module.exports = { // Permite hacer futuros imports
                         creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
                         limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
                         creador: req.auth.credentials,
-                        asignados: req.payload.operariosasignados ,
+                        asignados: req.payload.operariosasignados.split(',')
                     }
+                    // Comprobar no deja a un operario sin nombre cuando no asignamos a nadie
+                    if (tarea.asignados.length === 1 && tarea.asignados[0] === "")
+                        tarea.asignados = []
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
                     await repositorio.conexion()
@@ -536,10 +554,10 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/creadas?mensaje=Tarea creada&tipoMensaje=success')
+                        return h.redirect('/creadas?mensaje=Tarea creada&tipoMensaje=success&icon=check')
                     }
                     else {
-                        return h.redirect('/creadas?mensaje=No se pudo crear la tarea&tipoMensaje=danger')
+                        return h.redirect('/creadas?mensaje=No se pudo crear la tarea&tipoMensaje=danger&icon=close')
                     }
                 }
             },
