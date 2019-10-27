@@ -8,7 +8,7 @@
                         <div class="uk-inline uk-width-1-2">
                             <span class="uk-form-icon" uk-icon="icon: search"></span>
                             <input class="uk-input" type="text" name="criterio"
-                                   placeholder="Buscar...">
+                                   placeholder="Buscar tarea...">
                         </div>
                         <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid uk-flex-center">
                             <label><input class="uk-radio" type="radio" name="estado"
@@ -58,11 +58,11 @@
                     <td>
                         <a class="uk-link" href="/anuncio/{{_id}}/modificar">
                             <span  uk-icon="pencil"></span>
-                            Modificar
+                            <span class="uk-visible@m">Modificar</span>
                         </a> <br>
-                        <a class="uk-link" href="/anuncio/{{_id}}/eliminar">
-                            <span  uk-icon="trash"></span>
-                            Eliminar
+                        <a class="uk-link uk-text-danger" href="/anuncio/{{_id}}/eliminar">
+                            <span uk-icon="trash"></span>
+                            <span class="uk-visible@m">Eliminar</span>
                         </a>
                     </td>
                 </tr>
