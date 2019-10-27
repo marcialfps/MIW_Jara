@@ -278,7 +278,7 @@ module.exports = { // Permite hacer futuros imports
                     let pgUltima = 1;
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { encargados: req.auth.credentials }
+                    let criterio = { "asignados": req.auth.credentials  };
 
                     // Obtener el numero de tareas existentes
                     await repositorio.conexion()
@@ -536,8 +536,11 @@ module.exports = { // Permite hacer futuros imports
                         creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
                         limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
                         creador: req.auth.credentials,
-                        asignados: req.payload.operariosasignados ,
+                        asignados: req.payload.operariosasignados.split(',')
                     }
+                    // Comprobar no deja a un operario sin nombre cuando no asignamos a nadie
+                    if (tarea.asignados.length === 1 && tarea.asignados[0] === "")
+                        tarea.asignados = []
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
                     await repositorio.conexion()
