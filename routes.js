@@ -656,7 +656,20 @@ module.exports = { // Permite hacer futuros imports
                 method: 'GET',
                 path: '/tarea/{id}',
                 handler: async (req, h) => {
-                    return h.view('tarea',{},
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.id)}
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0)
+                                ret = false
+                            else
+                                tarea = tareas[0];
+                        })
+                    return h.view('tarea',
+                        {
+                            tarea: tarea
+                        },
                         {
                             layout: 'base'
                         });

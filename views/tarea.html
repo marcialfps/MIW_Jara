@@ -1,9 +1,18 @@
 <section class="uk-section custom-wrapper">
     <div class="uk-position-center">
-        <div class="uk-card uk-card-default uk-card-body">
-            <div class="uk-card-badge uk-label">Asignada</div>
-            <h3 class="uk-card-title">Title</h3>
-            <p>Lorem ipsum color sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-card-badge uk-label">{{tarea.estado}}</div>
+                <h3 class="uk-card-title">{{tarea.titulo}}</h3>
+                <p class="uk-text-meta uk-margin-remove-top">{{tarea.limite}}</p>
+            </div>
+            <div class="uk-card-body">
+                <p>{{tarea.descripcion}}</p>
+            </div>
+            <div class="uk-card-footer">
+                <p>Creada el {{tarea.creacion}} por {{tarea.creador}}.</p>
+                <a href="#" class="uk-button uk-button-text">Finalizar</a>
+            </div>
         </div>
     </div>
 </section>
