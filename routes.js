@@ -865,6 +865,7 @@ module.exports = { // Permite hacer futuros imports
                         })
                     return h.view('perfil',
                         {
+                            usuarioAutenticado: req.auth.credentials,
                             operario: operario
                         },
                         {
