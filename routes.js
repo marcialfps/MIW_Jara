@@ -207,7 +207,7 @@ module.exports = { // Permite hacer futuros imports
 
                     if (respuesta){
                         return h.redirect('/tarea/'+req.params.id+
-                            '?mensaje=Comentario añadido&tipoMensaje=success')
+                            '?mensaje=Comentario publicado&tipoMensaje=success&icon=check')
                     }
                     else {
                         return h.redirect('/tarea/'+req.params.id+
