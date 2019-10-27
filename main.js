@@ -72,10 +72,10 @@ const iniciarServer = async () => {
         var handlebars = require('handlebars');
         handlebars.registerHelper("sumar", (a, b) => {
             return a + b;
-        })
+        });
         handlebars.registerHelper("restar", (a, b) => {
             return a - b;
-        })
+        });
         // Helper method to prevent showing the pagination page "0" when we are on page "1"
         handlebars.registerHelper('ifGreaterThan', function(item1, item2, options) {
             return (item1 > item2) ? options.fn(this) : options.inverse(this);

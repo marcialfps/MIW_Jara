@@ -285,9 +285,7 @@ module.exports = { // Permite hacer futuros imports
                 },
                 handler: async (req, h) => {
                     req.cookieAuth.set({ usuario: "", secreto: "" });
-                    return h.view('login',
-                        { },
-                        { layout: 'base'});
+                    return h.redirect('/login?mensaje=Sesion cerrada&icon=sign-out')
                 }
             },
             {
@@ -320,7 +318,7 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/?mensaje=Autenticado correctamente&tipoMensaje=success')
+                        return h.redirect('/?mensaje=Bienvenido, ' + operarioABuscar.nombre + '&tipoMensaje=success&icon=sign-in')
                     }
                     else {
                         return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger')
@@ -331,9 +329,14 @@ module.exports = { // Permite hacer futuros imports
                 method: 'GET',
                 path: '/login',
                 handler: async (req, h) => {
-                    return h.view('login',
-                        { },
-                        { layout: 'base'});
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== ""){
+                        return h.redirect('/')
+                    }
+                    else{
+                        return h.view('login',
+                            { },
+                            { layout: 'base'});
+                    }
                 }
             },
             {
@@ -393,9 +396,14 @@ module.exports = { // Permite hacer futuros imports
                 method: 'GET',
                 path: '/registro',
                 handler: async (req, h) => {
-                    return h.view('registro',
-                        { },
-                        { layout: 'base'});
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== ""){
+                        return h.redirect('/')
+                    }
+                    else{
+                        return h.view('registro',
+                            { },
+                            { layout: 'base'});
+                    }
                 }
             },
             {
@@ -414,7 +422,7 @@ module.exports = { // Permite hacer futuros imports
                         estado: "asignado",
                         creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
                         limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
-                        creador: req.auth.credentials ,
+                        creador: req.auth.credentials,
                         asignados: req.payload.operariosasignados ,
                     }
                     // await no continuar hasta acabar esto
@@ -456,7 +464,6 @@ module.exports = { // Permite hacer futuros imports
 
                     return h.view('crear',
                         {
-                            usuario: req.auth.credentials,
                             usuarioAutenticado: req.auth.credentials,
                             operarios: operariosRecibidos
                         },
@@ -505,7 +512,6 @@ module.exports = { // Permite hacer futuros imports
                     return h.view(
                         'tareas', // html principal
                         { // data for the template
-                            usuario: req.auth.credentials,
                             usuarioAutenticado: req.auth.credentials,
                             tareas: tareasEncontradas,
                             nTareas: tareasEncontradas.length(),
@@ -538,16 +544,19 @@ module.exports = { // Permite hacer futuros imports
             {
                 method: 'GET',
                 path: '/',
+
                 handler: async (req, h) => {
                     // Query the request for parameters
+                    let user = null;
+                    if (req.state["session-id"] && req.state["session-id"].usuario !== "")
+                        user = req.state["session-id"].usuario;
                     return h.view('index',
                         {
-                            usuario: req.auth.credentials,
-                            usuarioAutenticado: req.auth.credentials,
+                            usuarioAutenticado: user
                         },
                         { layout: 'base'});
                 }
             }
         ])
     }
-}
+};
