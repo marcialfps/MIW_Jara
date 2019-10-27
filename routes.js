@@ -42,17 +42,18 @@ module.exports = { // Permite hacer futuros imports
                     // Recuperar la tarea y comprobarlo
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
                     let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+
                     let ret = false;
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerTareas(db, criterio))
                         .then((tareas) => {
                             if (tareas == null || tareas.length === 0)
-                                ret = false
+                                ret = false;
                             else
                                 tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
+                    if (tarea.asignados.includes(req.auth.credentials) || tarea.creador === req.auth.credentials){
                         // Actualizamos la tarea
                         await repositorio.conexion()
                             .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
@@ -89,7 +90,7 @@ module.exports = { // Permite hacer futuros imports
                                 tarea = tareas[0];
                         })
                     // Si el usuario está autorizado o es el creador
-                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
+                    if (tarea.asignados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
                         // Actualizamos la tarea
                         await repositorio.conexion()
                             .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
@@ -113,7 +114,7 @@ module.exports = { // Permite hacer futuros imports
                 handler: async (req, h) => {
 
                     let pg = parseInt(module.exports.getUrlParameter("pg", req.info.referrer));
-                    if (pg == null)
+                    if (pg == null || Number.isNaN(pg))
                         pg = 1;
 
                     // El anuncio a eliminar debe tener el ID indicado y ser del usuario que está en sesión
@@ -612,6 +613,8 @@ module.exports = { // Permite hacer futuros imports
 
                     // Pagination parameter with name "pg"
                     let pg = parseInt(req.query.pg);
+                    if (pg == null)
+                        pg = 1;
                     let pgUltima = 1;
 
 
