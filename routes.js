@@ -250,9 +250,9 @@ module.exports = { // Permite hacer futuros imports
                     // Da valor a respuesta
                     await repositorio.conexion()
                         .then((db) => repositorio.modificarTarea(db,criterio,tarea))
-                        .then((id) => {
+                        .then((result) => {
                             respuesta = false;
-                            if (id == null) {
+                            if (result == null || result.n === 0) {
                                 respuesta =  false
                             } else {
                                 respuesta = true;
@@ -260,10 +260,10 @@ module.exports = { // Permite hacer futuros imports
                         })
 
                     if (respuesta){
-                        return h.redirect('/creadas?mensaje=Tarea modificada&tipoMensaje=success')
+                        return h.redirect('/creadas?mensaje=Tarea modificada&tipoMensaje=success&icon=check')
                     }
                     else {
-                        return h.redirect('/creadas?mensaje=No se pudo modificar la tarea&tipoMensaje=danger')
+                        return h.redirect('/creadas?mensaje=No se pudo modificar la tarea&tipoMensaje=danger&icon=close')
                     }
                 }
             },
@@ -298,7 +298,7 @@ module.exports = { // Permite hacer futuros imports
                     }
                     else {
                         return h.redirect('/tarea/'+req.params.id+
-                            '?mensaje=No se pudo modificar la tarea&tipoMensaje=danger')
+                            '?mensaje=No se pudo modificar la tarea&tipoMensaje=danger&icon=close')
                     }
                 }
             },
@@ -309,12 +309,24 @@ module.exports = { // Permite hacer futuros imports
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    criterio = {
-                        _id: require("mongodb").ObjectID(req.params.id)
-                    }
+                    criterio =
+                        {
+                            $or:
+                                [
+                                    {
+                                        _id: require("mongodb").ObjectID(req.params.id),
+                                        creador: req.auth.credentials
+                                    },
+                                    {
+                                        _id: require("mongodb").ObjectID(req.params.id),
+                                        asignados: req.auth.credentials
+                                    }
+                                ]
+                        };
+
                     tarea = {
                         estado: "enprogreso"
-                    }
+                    };
                     await repositorio.conexion()
                         .then((db) => repositorio.modificarTarea(db,criterio,tarea))
                         .then((id) => {
@@ -324,7 +336,7 @@ module.exports = { // Permite hacer futuros imports
                             } else {
                                 respuesta = true;
                             }
-                        })
+                        });
 
                     if (respuesta){
                         return h.redirect('/tarea/'+req.params.id+
@@ -343,17 +355,29 @@ module.exports = { // Permite hacer futuros imports
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    criterio = {
-                        _id: require("mongodb").ObjectID(req.params.id)
-                    }
+                    criterio =
+                        {
+                            $or:
+                                [
+                                    {
+                                        _id: require("mongodb").ObjectID(req.params.id),
+                                        creador: req.auth.credentials
+                                    },
+                                    {
+                                        _id: require("mongodb").ObjectID(req.params.id),
+                                        asignados: req.auth.credentials
+                                    }
+                                ]
+                        };
+
                     tarea = {
                         estado: "finalizado"
                     }
                     await repositorio.conexion()
                         .then((db) => repositorio.modificarTarea(db,criterio,tarea))
-                        .then((id) => {
+                        .then((result) => {
                             respuesta = false;
-                            if (id == null) {
+                            if (result == null || result.n === 0) {
                                 respuesta =  false
                             } else {
                                 respuesta = true;
@@ -425,7 +449,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", {}))
                         .then((nTareas) => {
                             if (nTareas == null)
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger&icon=close')
 
                             pgUltima = nTareas/11;
 
@@ -467,14 +491,14 @@ module.exports = { // Permite hacer futuros imports
                     let pgUltima = 1;
 
                     // El criterio es que el usuario actual esté dentro de los encargados de la tarea
-                    let criterio = { "asignados": req.auth.credentials  };
+                    let criterio = { asignados: req.auth.credentials  };
 
                     // Obtener el numero de tareas existentes
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", criterio))
                         .then((nTareas) => {
                             if (nTareas == null)
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas asignadas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas asignadas&tipoMensaje=danger&icon=close')
 
                             pgUltima = nTareas/11;
 
@@ -490,7 +514,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
                             if (tareas == null){
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger&icon=close')
                             }
                             // Guardar el ID de la tarea como string para el ID de los botones de favoritas
                             for (i = 0; i < tareas.length; i++){
@@ -505,7 +529,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerSeguidasByName(db, req.auth.credentials))
                         .then((tareasSeguidas) => {
                             if (tareasSeguidas == null){
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger&icon=close')
                             }
                             misTareasSeguidas = tareasSeguidas;
                         })
@@ -539,7 +563,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerSeguidasByName(db, req.auth.credentials))
                         .then((seguidas) => {
                             if (seguidas == null)
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas seguidas&tipoMensaje=danger');
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas seguidas&tipoMensaje=danger&icon=close');
 
                             idsTareasSeguidas = seguidas;
                             let nTareas = seguidas.length;
@@ -559,7 +583,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
                             if (tareas == null){
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de seguidas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de seguidas&tipoMensaje=danger&icon=close')
                             }
                             // Guardar el ID de la tarea como string para el ID de los botones de favoritas
                             for (i = 0; i < tareas.length; i++){
@@ -623,7 +647,7 @@ module.exports = { // Permite hacer futuros imports
                         return h.redirect('/?mensaje=Bienvenido, ' + operarioABuscar.nombre + '&tipoMensaje=success&icon=sign-in')
                     }
                     else {
-                        return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger')
+                        return h.redirect('/login?mensaje=No se pudo iniciar sesion&tipoMensaje=danger&icon=close')
                     }
                 }
             },
@@ -671,7 +695,7 @@ module.exports = { // Permite hacer futuros imports
 
                     // Si ya existe, parar el registro
                     if (existe){
-                        return h.redirect('/registro?mensaje=Nombre de usuario ya existente&tipoMensaje=warning')
+                        return h.redirect('/registro?mensaje=Nombre de usuario ya existente&tipoMensaje=warning&icon=info')
                     }
 
                     await repositorio.conexion()
@@ -687,10 +711,10 @@ module.exports = { // Permite hacer futuros imports
                             }
                         })
                     if (respuesta){
-                        return h.redirect('/login?mensaje=Operario registrado&tipoMensaje=success')
+                        return h.redirect('/login?mensaje=Operario registrado&tipoMensaje=success&icon=check')
                     }
                     else {
-                        return h.redirect('/registro?mensaje=No se pudo crear el operario&tipoMensaje=danger')
+                        return h.redirect('/registro?mensaje=No se pudo crear el operario&tipoMensaje=danger&icon=close')
                     }
                 }
             },
@@ -813,7 +837,7 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerNumeroDocumentos(db, "tareas", criterio))
                         .then((nTareas) => {
                             if (nTareas == null)
-                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger&icon=close')
 
                             pgUltima = nTareas/11;
 

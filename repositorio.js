@@ -190,7 +190,7 @@ module.exports = {
                     resolve(null);
                 } else {
                     // modificado
-                    resolve(result);
+                    resolve(result.result);
                 }
                 db.close();
             });

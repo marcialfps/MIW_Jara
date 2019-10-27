@@ -76,13 +76,27 @@
                     {{/isFinished}}
                     <!-- Boton marcar empezada o finalizada -->
                     {{#isAsignada tarea.estado}}
-                    <a href="/tarea/{{ tarea._id}}/empezar"
-                         class="uk-button uk-button-default">Marcar empezada</a>
+                        {{#if esCreador}}
+                            <a href="/tarea/{{ tarea._id}}/empezar"
+                                 class="uk-button uk-button-default">Marcar empezada</a>
+                        {{else}}
+                            {{#if esAsignado}}
+                                <a href="/tarea/{{ tarea._id}}/empezar"
+                                   class="uk-button uk-button-default">Marcar empezada</a>
+                            {{/if}}
+                        {{/if}}
                     {{/isAsignada}}
 
                     {{#isInProgress tarea.estado}}
-                    <a href="/tarea/{{tarea._id}}/finalizar"
-                       class="uk-button uk-button-default">Marcar finalizada</a>
+                        {{#if esCreador}}
+                            <a href="/tarea/{{tarea._id}}/finalizar"
+                               class="uk-button uk-button-default">Marcar finalizada</a>
+                            {{else}}
+                                {{#if esAsignado}}
+                                    <a href="/tarea/{{tarea._id}}/finalizar"
+                                       class="uk-button uk-button-default">Marcar finalizada</a>
+                                {{/if}}
+                        {{/if}}
                     {{/isInProgress}}
                 </h3>
                 <p class="uk-text-meta uk-margin-remove-top">Fecha límite: {{tarea.limite}} • Creada el {{tarea.creacion}} por {{tarea.creador}}</p>
