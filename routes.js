@@ -22,6 +22,80 @@ module.exports = { // Permite hacer futuros imports
         server.route([
             {
                 method: 'GET',
+                path: '/favorita/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder marcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0)
+                                ret = false
+                            else
+                                tarea = tareas[0];
+                        })
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.marcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0)
+                                    ret = false
+                                else
+                                    ret = true  // Tarea marcada favorita
+                            })
+                    }
+                    // If not authorized, do nothing
+                    return ret;
+                }
+            },
+            {
+                method: 'GET',
+                path: '/no-favorita/{idTarea}',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Para poder desmarcar como favorita una tarea el usuario que lo haga debe ser su creador
+                    // o alguien a quien se le ha asignado
+                    // Recuperar la tarea y comprobarlo
+                    // El criterio es que el usuario actual esté dentro de los encargados de la tarea
+                    let criterio = { "_id": require("mongodb").ObjectID(req.params.idTarea)};
+                    let ret = false;
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareas(db, criterio))
+                        .then((tareas) => {
+                            if (tareas == null || tareas.length === 0)
+                                ret = false
+                            else
+                                tarea = tareas[0];
+                        })
+                    // Si el usuario está autorizado o es el creador
+                    if (tarea.encargados.includes(req.auth.credentials) || tarea.creador.localeCompare(req.auth.credentials) === 0){
+                        // Actualizamos la tarea
+                        await repositorio.conexion()
+                            .then((db) => repositorio.desmarcarTareaFavorita(db, req.auth.credentials, req.params.idTarea))
+                            .then((tareaMarcada) => {
+                                if (tareaMarcada === 0)
+                                    ret = false;
+                                else
+                                    ret = true // Tarea marcada favorita
+                            })
+                    }
+                    // If not authorized, do nothing
+                    return ret
+                }
+            },
+            {
+                method: 'GET',
                 path: '/anuncio/{id}/eliminar',
                 options: {
                     auth: 'auth-registrado'
@@ -149,7 +223,7 @@ module.exports = { // Permite hacer futuros imports
                             if (nTareas == null)
                                 return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger')
 
-                            pgUltima = nTareas/10;
+                            pgUltima = nTareas/11;
 
 
                             if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
@@ -164,30 +238,14 @@ module.exports = { // Permite hacer futuros imports
                         .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
                         .then((tareas) => {
                             tareasCreadas = tareas;
-
-                            // La página 2.5 no existe
-                            // Si excede sumar 1 y quitar los decimales
-                            if (pgUltima % 10 > 0 ){
-                                pgUltima = Math.trunc(pgUltima);
-                                pgUltima = pgUltima+1;
-                            }
                         });
 
-                    var paginas = [];
-                    for( i = 1; i <= pgUltima; i++){
-                        if ( i == pg ){
-                            paginas.push({valor: i , clase : "uk-active" });
-                        } else {
-                            paginas.push({valor: i});
-                        }
-                    }
                     return h.view('creadas',
                         {
                             tareas: tareasCreadas,
                             nTareas: tareasCreadas.length,
-                            paginas: paginas,
                             valor: pg,
-                            pgUltima:pgUltima,
+                            pgUltima:Math.trunc(pgUltima)+1,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );
@@ -214,7 +272,7 @@ module.exports = { // Permite hacer futuros imports
                             if (nTareas == null)
                                 return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas asignadas&tipoMensaje=danger')
 
-                            pgUltima = nTareas/10;
+                            pgUltima = nTareas/11;
 
                             if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
                                 pg = 1;
@@ -235,24 +293,7 @@ module.exports = { // Permite hacer futuros imports
                                 tareas[i].id = tareas[i]._id.toString()
                             }
                             misTareas = tareas;
-
-                            pgUltima = misTareas.total/10;
-                            // La página 2.5 no existe
-                            // Si excede sumar 1 y quitar los decimales
-                            if (pgUltima % 10 > 0 ){
-                                pgUltima = Math.trunc(pgUltima);
-                                pgUltima = pgUltima+1;
-                            }
                         })
-
-                    let paginas = [];
-                    for( i = 1; i <= pgUltima; i++){
-                        if ( i === pg ){
-                            paginas.push({valor: i , clase : "uk-active" });
-                        } else {
-                            paginas.push({valor: i});
-                        }
-                    }
 
                     // Vamos a rescatar todas las tareas favoritas del operario en sesion para poder
                     // mostrar en la vista si las esta siguiendo ya o no y poner botones en consecuencia
@@ -269,9 +310,66 @@ module.exports = { // Permite hacer futuros imports
                             tareas: misTareas,
                             nTareas: misTareas.length,
                             tareasSeguidas: misTareasSeguidas,
-                            paginas: paginas,
                             valor: pg,
-                            pgUltima:pgUltima,
+                            pgUltima:Math.trunc(pgUltima)+1,
+                            usuarioAutenticado: req.auth.credentials
+                        },
+                        { layout: 'base'} );
+                }
+            },
+            {
+                method: 'GET',
+                path: '/seguidas',
+                options: {
+                    auth: 'auth-registrado'
+                },
+                handler: async (req, h) => {
+                    // Pagination parameter with name "pg"
+                    let pg = parseInt(req.query.pg);
+                    let pgUltima = 1;
+
+                    // Obtener el array de tareas seguidas por el usuario
+                    var idsTareasSeguidas = []
+                    // Obtener los IDs de las tareas seguidas existentes del usuario
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerSeguidasByName(db, req.auth.credentials))
+                        .then((seguidas) => {
+                            if (seguidas == null)
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas seguidas&tipoMensaje=danger');
+
+                            idsTareasSeguidas = seguidas;
+                            let nTareas = seguidas.length;
+                            pgUltima = nTareas/11;
+
+                            if ( req.query.pg == null || pg > pgUltima || pg < 1){ // Puede no venir el param o ser demasiado
+                                pg = 1;
+                            }
+                        });
+
+                    // Transformamos el array que tiene strings a ObjectIDs...
+                    idsTareasSeguidas = idsTareasSeguidas.map(require("mongodb").ObjectID);
+                    // Nuestro criterio son tareas cuyo ObjectID se halle dentro del array de seguidas que hemos recuperado
+                    let criterio = { _id: {$in: idsTareasSeguidas} };
+
+                    await repositorio.conexion()
+                        .then((db) => repositorio.obtenerTareasPg(db, pg, criterio))
+                        .then((tareas) => {
+                            if (tareas == null){
+                                return h.redirect('/?mensaje=No se pudo acceder a la lista de seguidas&tipoMensaje=danger')
+                            }
+                            // Guardar el ID de la tarea como string para el ID de los botones de favoritas
+                            for (i = 0; i < tareas.length; i++){
+                                tareas[i].id = tareas[i]._id.toString()
+                            }
+                            tareasSeguidas = tareas;
+                        });
+
+                    return h.view('seguidas',
+                        {
+                            tareas: tareasSeguidas,
+                            nTareas: tareasSeguidas.length,
+                            valor: pg,
+                            pgUltima:Math.trunc(pgUltima)+1,
                             usuarioAutenticado: req.auth.credentials
                         },
                         { layout: 'base'} );

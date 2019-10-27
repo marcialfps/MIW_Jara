@@ -2,7 +2,7 @@
     <div class="uk-container">
         <div class="uk-overflow-auto">
             {{#ifEqualThan nTareas 0}}
-            <h2 class="uk-margin uk-text-center">Parece que no tienes tareas asignadas, ¿buscas alguna tarea?</h2>
+            <h2 class="uk-margin uk-text-center">Parece que no tienes tareas en seguimiento, ¿buscas alguna tarea?</h2>
             <div class="uk-margin uk-text-center">
                 <form action="/tareas">
                     <div class="uk-inline uk-width-1-2">
@@ -59,24 +59,13 @@
                         let urlBase = {};
                     </script>
                     <td>
-                        {{#isInList id ../tareasSeguidas }}
-                            <div id="container-{{id}}" style="margin: auto; width: fit-content">
-                                <button style="padding: 0 8px;"  id="seguir-{{id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary" type="button">
-                                </button>
-                            </div>
-                            <script>
-                                urlBase["{{id}}"] = "no-favorita"
-                            </script>
-                        {{else}}
-                            <div id="container-{{id}}" style="margin: auto; width: fit-content">
-                                <button style="padding: 0 8px;"  id="seguir-{{id}}" data-uk-icon="bookmark" class="uk-button uk-button-default" type="button">
-                                </button>
-                            </div>
-                            <script>
-                                urlBase["{{id}}"] = "favorita"
-                            </script>
-
-                        {{/isInList}}
+                        <div id="container-{{id}}" style="margin: auto; width: fit-content">
+                            <button style="padding: 0 8px;"  id="seguir-{{id}}" data-uk-icon="bookmark" class="uk-button uk-button-default uk-button-primary" type="button">
+                            </button>
+                        </div>
+                        <script>
+                            urlBase["{{id}}"] = "no-favorita"
+                        </script>
                         <script>
                             $("#container-{{id}}").click(function() {
 

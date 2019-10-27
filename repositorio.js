@@ -115,7 +115,6 @@ module.exports = {
                 if (err) {
                     resolve(null);
                 } else {
-                    // operarios que cumplen el filtro
                     resolve(result[0].seguidas);
                 }
                 db.close();
