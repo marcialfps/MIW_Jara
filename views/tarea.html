@@ -2,7 +2,17 @@
     <div class="uk-position-center">
         <div class="uk-card uk-card-default">
             <div class="uk-card-header">
-                <div class="uk-card-badge uk-label">{{tarea.estado}}</div>
+                {{#isAsignada tarea.estado}}
+                <div class="uk-card-badge uk-label uk-button-primary">Asignada</div>
+                {{/isAsignada}}
+
+                {{#isInProgress tarea.estado}}
+                <div style="background: #faa05a;" class="uk-card-badge uk-label uk-button-warning">En progreso</div>
+                {{/isInProgress}}
+
+                {{#isFinished tarea.estado}}
+                <div style="background: #32d296;" class="uk-card-badge uk-label uk-button-secondary">Finalizada</div>
+                {{/isFinished}}
                 <h3 class="uk-card-title">{{tarea.titulo}}</h3>
                 <p class="uk-text-meta uk-margin-remove-top">{{tarea.limite}}</p>
             </div>
