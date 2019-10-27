@@ -598,13 +598,12 @@ module.exports = { // Permite hacer futuros imports
                         .then((tareas) => {
                             tareasEncontradas = tareas;
                         })
-
                     return h.view(
                         'tareas', // html principal
                         { // data for the template
                             usuarioAutenticado: req.auth.credentials,
                             tareas: tareasEncontradas,
-                            nTareas: tareasEncontradas.length(),
+                            nTareas: tareasEncontradas.length,
                             busqueda: req.query.criterio.trim()
                         },
                         { // which layout
