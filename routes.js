@@ -1,19 +1,6 @@
 module.exports = { // Permite hacer futuros imports
     // Hapi needs a name for the module
     name: 'MyRouter',
-    // file upload helper
-    utilSubirFichero : async (binario, nombre, extension) => {
-        return new Promise((resolve, reject) => {
-            nombre = nombre + "." + extension;
-            // We are using node's fs module (filesystem)
-            require('fs').writeFile('./public/uploads/'+nombre, binario, err => {
-                if (err) {
-                    resolve(false)
-                }
-                resolve(true)
-            })
-        })
-    },
     getUrlParameter: (name, location) => {
     // Trim argument
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

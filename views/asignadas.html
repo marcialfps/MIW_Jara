@@ -56,7 +56,10 @@
                         {{/isFinished}}
                     </td>
                     <script>
-                        let urlBase = {};
+                        if (typeof urlBase === 'undefined')
+                            var urlBase = {};
+                        else
+                            urlBase = {};
                     </script>
                     <td>
                         {{#isInList id ../tareasSeguidas }}
