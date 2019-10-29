@@ -54,91 +54,8 @@
         <nav class="uk-navbar" data-uk-navbar>
             <div class="uk-navbar-left">
                 <a href="/">
-                    <img width="120" src="/images/logo/header.png" alt="Jara logo">
+                    <img width="120" style="margin: 10px" src="/images/logo/header.png" alt="Jara logo">
                 </a>
-            </div>
-
-            <div class="uk-navbar-right">
-                <!-- uk-visible@m visible en pantallas m o más-->
-                <ul class="uk-navbar-nav uk-visible@m">
-                    <li>
-                        <a href="/seguidas">
-                                <span data-uk-icon="bookmark"
-                                      class="uk-margin-small-right">
-                                </span> Seguidas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/creadas">
-                                <span data-uk-icon="file-edit"
-                                      class="uk-margin-small-right">
-                                </span> Creadas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/asignadas">
-                                <span data-uk-icon="list"
-                                      class="uk-margin-small-right">
-                                </span> Asignadas
-                        </a>
-                    </li>
-                </ul>
-                <div class="uk-navbar-item">
-                    <a href="/crear"
-                       class="uk-button uk-button-primary uk-visible@m">
-                            <span data-uk-icon="plus-circle"
-                                  class="uk-margin-small-right">
-                            </span> Crear tarea
-                    </a>
-                </div>
-                <!--User authenticated, show his name  -->
-                {{#if usuarioAutenticado}}
-                <div class="uk-navbar-item">
-                    <a href="#"
-                       class="uk-button uk-button-default uk-visible@m">
-                                    <span data-uk-icon="cog"
-                                          class="uk-margin-small-right">
-                                    </span>{{usuarioAutenticado}}
-                    </a>
-                    <div uk-dropdown>
-                        <ul class="uk-nav uk-dropdown-nav">
-                            <li class="uk-nav-header">Ajustes</li>
-                            <li>
-                                <a href="/">
-                                    <span data-uk-icon="user" class="uk-margin-small-right"></span>
-                                    Perfil
-                                </a>
-                            </li>
-                            <li class="uk-nav-divider"></li>
-                            <li>
-                                <a href="/desconectarse">
-                                    <span data-uk-icon="sign-out" class="uk-margin-small-right"></span>
-                                    Cerrar sesión
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                {{/if}}
-                <!--User not authenticated, show login  -->
-                {{^usuarioAutenticado}}
-                <div class="uk-navbar-item">
-                    <a href="/"
-                       class="uk-button uk-button-default uk-visible@m">
-                                <span data-uk-icon="home"
-                                      class="uk-margin-small-right">
-                                </span>Inicio
-                    </a>
-                </div>
-                {{/usuarioAutenticado}}
-
-                <!-- Menú de movil lo oculta en pantallas mayores de m-->
-                <div class="uk-navbar-item uk-hidden@m">
-                    <a class="uk-navbar-toggle"
-                       data-uk-toggle data-uk-navbar-toggle-icon
-                       href="#offcanvas-nav">
-                    </a>
-                </div>
             </div>
         </nav>
     </div>
@@ -146,67 +63,7 @@
 <!-- Menú para movil - offCanvas -->
 <div id="offcanvas-nav" data-uk-offcanvas="flip: true; overlay: true">
     <div class="uk-offcanvas-bar uk-offcanvas-bar-animation uk-offcanvas-slide">
-        <button
-                class="uk-offcanvas-close uk-close uk-icon"
-                type="button"
-                data-uk-close>
-        </button>
-        <ul class="uk-nav uk-nav-default">
-            <li class="uk-nav-header">Inicio</li>
-            <li>
-                <a href="/seguidas">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: bookmark">
-                        </span>Seguidas
-                </a>
-            </li>
-            <li>
-                <a href="/creadas">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: file-edit">
-                        </span>Creadas
-                </a>
-            </li>
-            <li>
-                <a href="/asignadas">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: list">
-                        </span>Asignadas
-                </a>
-            </li>
-            <li>
-                <a href="/crear">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: plus-circle">
-                        </span>Crear tarea
-                </a>
-            </li>
-            {{#if usuarioAutenticado}}
-            <li>
-                <a href="/">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: user">
-                        </span>Perfil
-                </a>
-            </li>
-            <li>
-                <a href="/desconectarse">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: close">
-                        </span>Cerrar sesión
-                </a>
-            </li>
-            {{/if}}
-            {{^usuarioAutenticado}}
-            <li>
-                <a href="/login">
-                        <span class="uk-margin-small-right uk-icon"
-                              data-uk-icon="icon: sign-in">
-                        </span>Acceder
-                </a>
-            </li>
-            {{/usuarioAutenticado}}
-        </ul>
+
     </div>
 </div>
 
