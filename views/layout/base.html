@@ -63,7 +63,7 @@
                     <ul class="uk-navbar-nav uk-visible@m">
                         {{#if usuarioAutenticado}}
                         <li>
-                            <a href="/seguidas">
+                            <a id="seguidas" href="/seguidas">
                                 <span data-uk-icon="bookmark"
                                       class="uk-margin-small-right">
                                 </span> Seguidas
@@ -72,7 +72,7 @@
                         {{/if}}
                         {{#if usuarioAutenticado}}
                         <li>
-                            <a href="/creadas">
+                            <a id="creadas" href="/creadas">
                                 <span data-uk-icon="file-edit"
                                       class="uk-margin-small-right">
                                 </span> Creadas
@@ -81,7 +81,7 @@
                         {{/if}}
                         {{#if usuarioAutenticado}}
                         <li>
-                            <a href="/asignadas">
+                            <a id="asignadas" href="/asignadas">
                                 <span data-uk-icon="list"
                                       class="uk-margin-small-right">
                                 </span> Asignadas
@@ -241,6 +241,14 @@
             </div>
         </div>
     </footer>
-
+    <script>
+        $( document ).ready(function() {
+            let currentNavItem = "{{currentLocation}}";
+            if (typeof currentNavItem != "undefined" && currentNavItem !== ""){
+                console.log("work")
+                $("#"+currentNavItem).css("color", "#111")
+            }
+        });
+    </script>
 </body>
 </html>

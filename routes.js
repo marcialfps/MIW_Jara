@@ -461,7 +461,9 @@ module.exports = { // Permite hacer futuros imports
                             nTareas: tareasCreadas.length,
                             valor: pg,
                             pgUltima:Math.trunc(pgUltima)+1,
-                            usuarioAutenticado: req.auth.credentials
+                            usuarioAutenticado: req.auth.credentials,
+                            // Highlight nav
+                            currentLocation: "creadas"
                         },
                         { layout: 'base'} );
                 }
@@ -527,7 +529,9 @@ module.exports = { // Permite hacer futuros imports
                             tareasSeguidas: misTareasSeguidas,
                             valor: pg,
                             pgUltima:Math.trunc(pgUltima)+1,
-                            usuarioAutenticado: req.auth.credentials
+                            usuarioAutenticado: req.auth.credentials,
+                            // Highlight nav
+                            currentLocation: "asignadas"
                         },
                         { layout: 'base'} );
                 }
@@ -585,7 +589,9 @@ module.exports = { // Permite hacer futuros imports
                             nTareas: tareasSeguidas.length,
                             valor: pg,
                             pgUltima:Math.trunc(pgUltima)+1,
-                            usuarioAutenticado: req.auth.credentials
+                            usuarioAutenticado: req.auth.credentials,
+                            // Highlight nav
+                            currentLocation: "seguidas"
                         },
                         { layout: 'base'} );
                 }
