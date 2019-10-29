@@ -22,12 +22,16 @@
     margin: auto 12px;
 }
 
-.task-row .hidden {
-    visibility: hidden;
-}
+/* On screens that are that size or more, do add the hover effect on each task */
+@media screen and (min-width: 960px) {
 
-.task-row:hover .hidden {
-    visibility: visible;
+    .task-row .hidden {
+        visibility: hidden;
+    }
+
+    .task-row:hover .hidden {
+        visibility: visible;
+    }
 }
 
 

@@ -41,7 +41,7 @@
                 {{#each tareas}}
                 <tr class="task-row">
                     <td><a href="/tarea/{{_id}}">{{ titulo }}</a></td>
-                    <td>{{ descripcion }}</td>
+                    <td class="uk-visible@m">{{ descripcion }}</td>
                     <td>
                         {{#isAsignada estado}}
                         <p class="uk-text-uppercase uk-text-primary">Asignada</p>
@@ -55,8 +55,8 @@
                         <p class="uk-text-uppercase uk-text-success">Finalizada</p>
                         {{/isFinished}}
                     </td>
-                    <td>
-                        <a class="uk-link hidden" href="/tarea/{{_id}}/modificar">
+                    <td class="uk-text-center">
+                        <a class="uk-link uk-text-primary hidden" href="/tarea/{{_id}}/modificar">
                             <span  uk-icon="pencil"></span>
                             <span class="uk-visible@m">Modificar</span>
                         </a> <br>
