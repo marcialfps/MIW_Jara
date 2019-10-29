@@ -34,12 +34,12 @@
                     <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
                     <th class="uk-table-expand uk-visible@m">Descripción</th>
                     <th class="uk-width-small">Estado</th>
-                    <th class="uk-width-small">Opciones</th>
+                    <th class="uk-width-small"></th>
                 </tr>
                 </thead>
                 <tbody>
                 {{#each tareas}}
-                <tr>
+                <tr class="task-row">
                     <td><a href="/tarea/{{_id}}">{{ titulo }}</a></td>
                     <td>{{ descripcion }}</td>
                     <td>
@@ -56,11 +56,11 @@
                         {{/isFinished}}
                     </td>
                     <td>
-                        <a class="uk-link" href="/tarea/{{_id}}/modificar">
+                        <a class="uk-link hidden" href="/tarea/{{_id}}/modificar">
                             <span  uk-icon="pencil"></span>
                             <span class="uk-visible@m">Modificar</span>
                         </a> <br>
-                        <a class="uk-link uk-text-danger" href="/eliminar/{{_id}}">
+                        <a class="uk-link uk-text-danger hidden" href="/eliminar/{{_id}}">
                             <span uk-icon="trash"></span>
                             <span class="uk-visible@m">Eliminar</span>
                         </a>

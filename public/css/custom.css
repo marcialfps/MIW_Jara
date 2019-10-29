@@ -22,4 +22,12 @@
     margin: auto 12px;
 }
 
+.task-row .hidden {
+    visibility: hidden;
+}
+
+.task-row:hover .hidden {
+    visibility: visible;
+}
+
 
