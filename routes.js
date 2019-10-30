@@ -420,7 +420,7 @@ module.exports = { // Permite hacer futuros imports
                     return h.view('modificar',
                         {
                             tarea: tarea,
-                            fechaLimite: (tarea.limite.getDate()-1)+"/"+
+                            fechaLimite: (tarea.limite.getDate())+"/"+
                                 (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear(),
                             operarios: operariosRecibidos,
                             usuarioAutenticado: req.auth.credentials
