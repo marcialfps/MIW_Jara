@@ -753,8 +753,7 @@ module.exports = { // Permite hacer futuros imports
                         asignados: req.payload.operariosasignados.split(',')
                     }
                     // Ajustar la fehca límite de la tarea para que sea un Date
-                    let limite = new Date(req.payload.año, req.payload.mes-1, 1, 0, 0, 0);
-                    limite.setDate(parseInt(req.payload.dia)+1);
+                    let limite = new Date(req.payload.año, req.payload.mes-1, req.payload.dia, 0, 0, 0);
                     tarea.limite = limite;
                     // Comprobar no deja a un operario sin nombre cuando no asignamos a nadie
                     if (tarea.asignados.length === 1 && tarea.asignados[0] === "")
