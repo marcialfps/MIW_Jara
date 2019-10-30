@@ -230,9 +230,17 @@ module.exports = { // Permite hacer futuros imports
                     tarea = {
                         titulo: req.payload.titulo,
                         descripcion: req.payload.descripcion,
-                        limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
                         asignados: req.payload.operariosasignados
                     }
+                    // Ajustar los datos de la petición a un objeto date
+                    let limite = new Date();
+                    limite.setDate(req.payload.dia);
+                    limite.setMonth(req.payload.mes);
+                    limite.setFullYear(req.payload.año);
+                    limite.setHours(0);
+                    limite.setMinutes(0);
+                    limite.setSeconds(0);
+                    tarea.limite = limite;
                     // await no continuar hasta acabar esto
                     // Da valor a respuesta
                     await repositorio.conexion()
@@ -407,10 +415,13 @@ module.exports = { // Permite hacer futuros imports
                         .then((tareas) => {
                             // ¿Solo una coincidencia por _id?
                             tarea = tareas[0];
-                        })
+                        });
+
                     return h.view('modificar',
                         {
                             tarea: tarea,
+                            fechaLimite: (tarea.limite.getDate()-1)+"/"+
+                                (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear(),
                             operarios: operariosRecibidos,
                             usuarioAutenticado: req.auth.credentials
                         },
@@ -733,16 +744,18 @@ module.exports = { // Permite hacer futuros imports
                 },
                 handler: async (req, h) => {
                     // Parse form data
-                    var today = new Date()
                     tarea = {
                         titulo: req.payload.titulo,
                         descripcion: req.payload.descripcion,
                         estado: "asignado",
-                        creacion: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear() ,
-                        limite: req.payload.dia+"/"+req.payload.mes+"/"+req.payload.año ,
+                        creacion: new Date(),
                         creador: req.auth.credentials,
                         asignados: req.payload.operariosasignados.split(',')
                     }
+                    // Ajustar la fehca límite de la tarea para que sea un Date
+                    let limite = new Date(req.payload.año, req.payload.mes-1, 1, 0, 0, 0);
+                    limite.setDate(parseInt(req.payload.dia)+1);
+                    tarea.limite = limite;
                     // Comprobar no deja a un operario sin nombre cuando no asignamos a nadie
                     if (tarea.asignados.length === 1 && tarea.asignados[0] === "")
                         tarea.asignados = []
