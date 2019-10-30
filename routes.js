@@ -465,6 +465,11 @@ module.exports = { // Permite hacer futuros imports
                             tareasCreadas = tareas;
                         });
 
+                    tareasCreadas.forEach(function (tarea) {
+                        tarea.limite_string = (tarea.limite.getDate())+"/"+
+                        (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear()
+                    })
+
                     return h.view('creadas',
                         {
                             tareas: tareasCreadas,
@@ -521,7 +526,6 @@ module.exports = { // Permite hacer futuros imports
                             }
                             misTareas = tareas;
                         })
-
                     // Vamos a rescatar todas las tareas favoritas del operario en sesion para poder
                     // mostrar en la vista si las esta siguiendo ya o no y poner botones en consecuencia
                     await repositorio.conexion()
@@ -531,7 +535,13 @@ module.exports = { // Permite hacer futuros imports
                                 return h.redirect('/?mensaje=No se pudo acceder a la lista de tareas&tipoMensaje=danger&icon=close')
                             }
                             misTareasSeguidas = tareasSeguidas;
-                        })
+                        });
+
+                    misTareas.forEach(function (tarea) {
+                        tarea.limite_string = (tarea.limite.getDate())+"/"+
+                            (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear()
+                    });
+
                     return h.view('asignadas',
                         {
                             tareas: misTareas,
@@ -592,6 +602,11 @@ module.exports = { // Permite hacer futuros imports
                             }
                             tareasSeguidas = tareas;
                         });
+
+                    tareasSeguidas.forEach(function (tarea) {
+                        tarea.limite_string = (tarea.limite.getDate())+"/"+
+                            (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear()
+                    })
 
                     return h.view('seguidas',
                         {
