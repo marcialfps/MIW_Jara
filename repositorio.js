@@ -30,7 +30,7 @@ module.exports = {
     obtenerComentarios : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('comentarios');
-            collection.find(criterio).toArray( (err, result) => {
+            collection.find(criterio).sort({ fecha: 1}).toArray( (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {

@@ -261,12 +261,11 @@ module.exports = { // Permite hacer futuros imports
                     auth: 'auth-registrado'
                 },
                 handler: async (req, h) => {
-                    var today = new Date()
                     comentario = {
                         autor: req.auth.credentials,
                         tarea: require("mongodb").ObjectID(req.params.id),
                         texto: req.payload.texto,
-                        fecha: today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear()
+                        fecha: new Date()
                     }
                     await repositorio.conexion()
                         .then((db) => repositorio.insertarComentario(db,comentario))
@@ -895,7 +894,7 @@ module.exports = { // Permite hacer futuros imports
                 path: '/tarea/{id}',
                 handler: async (req, h) => {
                     // Obtener comentarios
-                    let criterioComentario = {"tarea": require("mongodb").ObjectID(req.params.id)}
+                    let criterioComentario = {"tarea": require("mongodb").ObjectID(req.params.id)};
                     let comentariosTarea = []
                     await repositorio.conexion()
                         .then((db) => repositorio.obtenerComentarios(db, criterioComentario))
@@ -926,7 +925,17 @@ module.exports = { // Permite hacer futuros imports
                             parametrosVista.esAsignado = true;
                     }
                     parametrosVista.tarea = tarea;
+
+                    // Hemos recuperado la hora de los comentarios como objeto Date, vamos a enseñarla
+                    // al usuario de forma más amigable:
+                    comentariosTarea.forEach(function (comentario) {
+                        comentario.fecha_string = comentario.fecha.getDate()+"/"+
+                            (comentario.fecha.getMonth()+1)+"/"+comentario.fecha.getFullYear()+
+                            " - "+comentario.fecha.getHours()+":"+comentario.fecha.getMinutes()
+                    });
+
                     parametrosVista.comentarios = comentariosTarea;
+
 
                     let operario = null;
                     if (username != null){
