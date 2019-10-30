@@ -62,7 +62,7 @@ module.exports = {
     obtenerTareas : async (db, criterio) => {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
-            collection.find(criterio).toArray( (err, result) => {
+            collection.find(criterio).sort({ limite: -1}).toArray( (err, result) => {
                 if (err) {
                     resolve(null);
                 } else {
@@ -79,7 +79,7 @@ module.exports = {
         promise = new Promise((resolve, reject) => {
             var collection = db.collection('tareas');
             collection.count( criterio, (err, count) => {
-                collection.find(criterio).skip( (pg-1)*10 ).limit( 10 )
+                collection.find(criterio).sort({ limite: 1}).skip( (pg-1)*10 ).limit( 10 )
                     .toArray( (err, result) => {
                         if (err) {
                             resolve(null);
