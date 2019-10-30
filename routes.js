@@ -235,7 +235,7 @@ module.exports = { // Permite hacer futuros imports
                     // Ajustar los datos de la petición a un objeto date
                     let limite = new Date();
                     limite.setDate(req.payload.dia);
-                    limite.setMonth(req.payload.mes);
+                    limite.setMonth(req.payload.mes-1);
                     limite.setFullYear(req.payload.año);
                     limite.setHours(0);
                     limite.setMinutes(0);
