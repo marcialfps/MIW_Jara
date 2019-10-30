@@ -27,6 +27,7 @@
             <tr>
                 <th class="uk-width-1-4@m uk-width-1-2">Titulo</th>
                 <th class="uk-table-expand uk-visible@m">Descripción</th>
+                <th class="uk-width-small uk-visible@m">Fecha límite</th>
                 <th class="uk-width-small">Estado</th>
             </tr>
             </thead>
@@ -35,6 +36,7 @@
             <tr>
                 <td><a href="/tarea/{{_id}}">{{ titulo }}</a></td>
                 <td>{{ descripcion }}</td>
+                <td class="uk-visible@m">{{ limite_string }}</td>
                 <td>
                     {{#isAsignada estado}}
                     <p class="uk-text-uppercase uk-text-primary">Asignada</p>

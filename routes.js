@@ -871,6 +871,11 @@ module.exports = { // Permite hacer futuros imports
                             tareasEncontradas = tareas;
                         });
 
+                    tareasEncontradas.forEach(function (tarea) {
+                        tarea.limite_string = (tarea.limite.getDate())+"/"+
+                            (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear()
+                    });
+
                     let user = null;
                     if (req.state["session-id"] && req.state["session-id"].usuario !== "")
                         user = req.state["session-id"].usuario;
