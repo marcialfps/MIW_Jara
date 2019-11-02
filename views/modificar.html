@@ -14,34 +14,70 @@
                            value="{{tarea.titulo}}" required="true">
                 </div>
 
-                <div class="uk-grid uk-margin">
-                    <div class="uk-width-4-5">
-                        <label class="uk-form-label">Seleccionar operario</label><br>
-                        <div>
-                            <select class="uk-select uk-width-4-5" name="operario" id="operario"
-                                    required="true">
-                                {{#each operarios}}
-                                <option value="{{nombre}}">{{nombre}}</option>
-                                {{/each}}
-                            </select>
-                            <button id="add" style="padding: 0 8px;" class="uk-button uk-button-primary uk-border-rounded" type="button">
-                                <span uk-icon="icon: plus-circle"></span>
-                            </button>
-                            <button id="remove" style="padding: 0 8px;" class="uk-button uk-button-danger uk-border-rounded" type="button">
-                                <span uk-icon="icon: minus-circle"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="uk-width-3-5">
-                        <label class="uk-form-label">Operario/s asignado/s</label>
-                        <input class="uk-input" type="text" readonly id="operarios-asignados"
-                               name="operariosasignados" value="{{tarea.asignados}}" required="true">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Selecciona un operario</label><br>
+                    <div class="uk-margin-auto uk-grid">
+                        <select class="uk-select uk-width-3-4" name="operario" id="operario"
+                                required="true">
+                            {{#each operarios}}
+                            <option value="{{nombre}}">{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                        <button style="padding: 0 8px;" id="add" class="uk-button uk-button-primary uk-width-1-4" type="button">
+                            <span uk-icon="icon: plus-circle"></span>
+                        </button>
                     </div>
                 </div>
 
+                <div class="uk-margin-auto">
+                    <label class="uk-form-label">Operario/s asignado/s</label>
+                    <div class="listadoOperarios">
+                        <p class="uk-text-meta" id="vacio">No hay operarios asignados</p>
+                        <div class="uk-inline uk-visible-toggle uk-width-1-5" id="ejemplo" hidden>
+                            <button class="uk-form-icon uk-form-icon-flip uk-invisible-hover remove" type="button"
+                                    uk-icon="icon: trash">
+                            </button>
+                            <input class="uk-input" type="text" style="color: darkslategrey;" disabled>
+                        </div>
+                    </div>
+                    <input id="operarios-asignados" name="operariosasignados" hidden>
+                </div>
+
                 <script>
-                    var operariosstr = "{{tarea.asignados}}"
-                    var operarios = operariosstr.split(",")
+                    var operariosstr = "{{tarea.asignados}}";
+                    var operariosAux = operariosstr.split(",");
+                    var operarios = [];
+                    for (i = 0; i < operariosAux.length; i++) {
+                        if(operariosAux[i] != "") {
+                            operarios.push(operariosAux[i]);
+                        }
+                    }
+
+                    function inicializar() {
+                        $("#operarios-asignados").val(operarios);
+                        for(i = 0; i < operarios.length; i++) {
+                            $("#vacio").attr("hidden", true);
+                            var nuevoElemento = $("#ejemplo").clone().appendTo(".listadoOperarios");
+                            nuevoElemento.find("input").val(operarios[i]);
+                            nuevoElemento.attr("id", "asignado-" + operarios[i]);
+                            nuevoElemento.attr("hidden", false);
+
+                            $(".remove").click(function () {
+                                for (var i = 0; i < operarios.length; i++) {
+                                    if (operarios[i] === $(this).next().val()) {
+                                        operarios.splice(i, 1);
+                                    }
+                                }
+                                $("#asignado-" + $(this).next().val()).remove();
+                                $("#operarios-asignados").val(operarios);
+                                if (operarios.length == 0) {
+                                    $("#vacio").attr("hidden", false);
+                                }
+                            })
+                        }
+                    }
+                    console.log(operarios);
+                    inicializar();
 
                     $("#add").click(function () {
                         for( var i = 0; i < operarios.length; i++){
@@ -49,17 +85,26 @@
                                 return
                             }
                         }
-                        operarios.push($("#operario").val())
-                        $("#operarios-asignados").val(operarios)
-                    })
+                        operarios.push($("#operario").val());
+                        $("#operarios-asignados").val(operarios);
+                        $("#vacio").attr("hidden", true);
+                        var nuevoElemento = $("#ejemplo").clone().appendTo(".listadoOperarios");
+                        nuevoElemento.find("input").val($("#operario").val());
+                        nuevoElemento.attr("id", "asignado-"+$("#operario").val());
+                        nuevoElemento.attr("hidden", false);
 
-                    $("#remove").click(function () {
-                        for( var i = 0; i < operarios.length; i++){
-                            if ( operarios[i] === $("#operario").val()) {
-                                operarios.splice(i, 1);
+                        $(".remove").click(function () {
+                            for( var i = 0; i < operarios.length; i++){
+                                if ( operarios[i] === $(this).next().val()) {
+                                    operarios.splice(i, 1);
+                                }
                             }
-                        }
-                        $("#operarios-asignados").val(operarios)
+                            $("#asignado-"+$(this).next().val()).remove();
+                            $("#operarios-asignados").val(operarios);
+                            if(operarios.length == 0) {
+                                $("#vacio").attr("hidden", false);
+                            }
+                        })
                     })
                 </script>
 
