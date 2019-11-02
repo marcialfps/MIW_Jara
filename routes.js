@@ -963,7 +963,11 @@ module.exports = { // Permite hacer futuros imports
                     comentariosTarea.forEach(function (comentario) {
                         comentario.fecha_string = comentario.fecha.getDate()+"/"+
                             (comentario.fecha.getMonth()+1)+"/"+comentario.fecha.getFullYear()+
-                            " - "+comentario.fecha.getHours()+":"+comentario.fecha.getMinutes()
+                            " - "+comentario.fecha.getHours()+":";
+
+                        if (comentario.fecha.getMinutes() < 10)
+                            comentario.fecha_string+= "0";
+                        comentario.fecha_string+=comentario.fecha.getMinutes();
                     });
 
                     parametrosVista.comentarios = comentariosTarea;
