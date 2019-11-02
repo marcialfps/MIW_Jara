@@ -421,7 +421,7 @@ module.exports = { // Permite hacer futuros imports
                         {
                             tarea: tarea,
                             fechaLimite: (tarea.limite.getDate())+"/"+
-                                (tarea.limite.getMonth()+1)+"/"+tarea.limite.getFullYear(),
+                                (tarea.limite.getMonth()+1)+"/"+(tarea.limite.getFullYear()),
                             operarios: operariosRecibidos,
                             usuarioAutenticado: req.auth.credentials
                         },
@@ -972,6 +972,10 @@ module.exports = { // Permite hacer futuros imports
 
                     parametrosVista.comentarios = comentariosTarea;
                     parametrosVista.nComentarios = comentariosTarea.length;
+                    parametrosVista.fechaLimite = (tarea.limite.getDate())+"/"+
+                        (tarea.limite.getMonth()+1)+"/"+(tarea.limite.getFullYear());
+                    parametrosVista.fechaCreacion = (tarea.creacion.getDate())+"/"+
+                        (tarea.creacion.getMonth()+1)+"/"+(tarea.creacion.getFullYear());
 
 
                     let operario = null;
