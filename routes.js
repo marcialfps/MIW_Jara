@@ -967,6 +967,7 @@ module.exports = { // Permite hacer futuros imports
                     });
 
                     parametrosVista.comentarios = comentariosTarea;
+                    parametrosVista.nComentarios = comentariosTarea.length;
 
 
                     let operario = null;
