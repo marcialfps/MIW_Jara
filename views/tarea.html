@@ -118,6 +118,7 @@
                     </div>
                     <div class="uk-width-expand">
                         <h4 class="uk-comment-title uk-margin-remove">{{autor}}</a></h4>
+                        <span id="{{_id}}" class="uk-badge"></span>
                         <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
                             <li>{{fecha_string}}</li>
                         </ul>
@@ -127,6 +128,20 @@
                     <p>{{texto}}</p>
                 </div>
             </article>
+            <script>
+                var fecha = new Date("{{fecha}}");
+                var today = new Date();
+                var id = "{{_id}}";
+                if (fecha.getDate() == today.getDate()) {
+                    $("#"+id).text("Hoy");
+                } else if (fecha.getDate()+1 == today.getDate()) {
+                    $("#"+id).text("Ayer");
+                } else if (fecha.getDate()+7 > today.getDate()) {
+                    $("#"+id).text("Hace una semana");
+                } else {
+                    $("#"+id).text("Hace semanas");
+                }
+            </script>
             {{/each}}
         {{else}}
             <h3 class="uk-card-title">No hay comentarios</h3>
