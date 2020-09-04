@@ -17,7 +17,7 @@
     "boom": "^7.3.0",
     "handlebars": "^4.4.5",
     "hapi-error": "^2.1.0",
-    "mongodb": "^2.2.33",
+    "mongodb": "^3.1.13",
     "vision": "^5.4.4"
   }
 }
